@@ -1,0 +1,36 @@
+device: cuda
+robot: wuji  config: pico4_wuji_hand.yaml
+independent joints: 20  (nq=20)
+
+dataset:
+  qsq_pico4_merged_v1      frames= 11256 valid= 11256 unique= 11254 (0% dups)
+
+train frames: 9566   val frames: 1688 (time split at 85%)
+model: 158,996 params, in_dim=80
+step      1  train  89.5916  val  83.7790  lr 3.00e-04     0.4s
+step    500  train   8.6225  val   8.6873  lr 2.99e-04    48.5s
+step   1000  train   8.7540  val   8.3095  lr 2.95e-04    97.7s
+step   1500  train   8.7799  val   8.2267  lr 2.89e-04   146.8s
+step   2000  train   8.7299  val   8.1845  lr 2.80e-04   195.0s
+step   2500  train   8.6548  val   8.1345  lr 2.69e-04   243.7s
+step   3000  train   8.3889  val   8.1098  lr 2.56e-04   292.2s
+step   3500  train   8.0525  val   8.0970  lr 2.41e-04   340.4s
+step   4000  train   7.9962  val   8.0790  lr 2.25e-04   389.0s
+step   4500  train   8.3512  val   8.0766  lr 2.07e-04   437.7s
+step   5000  train   8.5356  val   8.0696  lr 1.89e-04   486.1s
+step   5500  train   8.4191  val   8.0541  lr 1.70e-04   534.5s
+step   6000  train   8.5727  val   8.0416  lr 1.50e-04   583.4s
+step   6500  train   8.0852  val   8.0402  lr 1.30e-04   632.4s
+step   7000  train   8.1171  val   8.0433  lr 1.11e-04   681.0s
+step   7500  train   8.5330  val   8.0333  lr 9.26e-05   730.2s
+step   8000  train   8.1919  val   8.0280  lr 7.50e-05   779.1s
+step   8500  train   8.5277  val   8.0226  lr 5.87e-05   828.3s
+step   9000  train   8.4490  val   8.0182  lr 4.39e-05   877.6s
+step   9500  train   8.0800  val   8.0187  lr 3.10e-05   928.3s
+step  10000  train   8.1371  val   8.0141  lr 2.01e-05   979.1s
+step  10500  train   8.3431  val   8.0116  lr 1.14e-05  1030.2s
+step  11000  train   8.9620  val   8.0118  lr 5.11e-06  1080.5s
+step  11500  train   8.1839  val   8.0109  lr 1.28e-06  1131.0s
+step  12000  train   8.1197  val   8.0106  lr 0.00e+00  1180.8s
+
+best val loss 8.0106  ->  out/net_wuji.pt

@@ -1,0 +1,36 @@
+device: cuda
+robot: shadow  config: pico4_shadow_hand.yaml
+independent joints: 22  (nq=22)
+
+dataset:
+  qsq_pico4_merged_v1      frames= 11256 valid= 11256 unique= 11254 (0% dups)
+
+train frames: 9566   val frames: 1688 (time split at 85%)
+model: 159,510 params, in_dim=80
+step      1  train 132.6644  val 117.3620  lr 3.00e-04     0.4s
+step    500  train  13.4546  val  13.8942  lr 2.99e-04    51.9s
+step   1000  train  14.0919  val  13.5315  lr 2.95e-04   102.8s
+step   1500  train  14.4754  val  13.4343  lr 2.89e-04   152.8s
+step   2000  train  14.7184  val  13.3993  lr 2.80e-04   202.4s
+step   2500  train  13.9396  val  13.3343  lr 2.69e-04   252.1s
+step   3000  train  13.7976  val  13.3184  lr 2.56e-04   301.4s
+step   3500  train  12.9609  val  13.2876  lr 2.41e-04   350.6s
+step   4000  train  12.8417  val  13.2700  lr 2.25e-04   400.2s
+step   4500  train  12.7927  val  13.2706  lr 2.07e-04   449.8s
+step   5000  train  14.3528  val  13.2556  lr 1.89e-04   499.2s
+step   5500  train  13.6270  val  13.2632  lr 1.70e-04   549.2s
+step   6000  train  13.5971  val  13.2548  lr 1.50e-04   599.6s
+step   6500  train  13.9552  val  13.2310  lr 1.30e-04   650.6s
+step   7000  train  12.8748  val  13.2339  lr 1.11e-04   701.1s
+step   7500  train  14.5517  val  13.2288  lr 9.26e-05   751.1s
+step   8000  train  13.2660  val  13.2207  lr 7.50e-05   800.5s
+step   8500  train  14.1922  val  13.2207  lr 5.87e-05   849.6s
+step   9000  train  13.2779  val  13.2172  lr 4.39e-05   899.9s
+step   9500  train  13.3997  val  13.2161  lr 3.10e-05   949.6s
+step  10000  train  12.9057  val  13.2152  lr 2.01e-05   998.8s
+step  10500  train  13.8383  val  13.2099  lr 1.14e-05  1047.9s
+step  11000  train  14.7093  val  13.2101  lr 5.11e-06  1097.3s
+step  11500  train  13.5996  val  13.2097  lr 1.28e-06  1149.1s
+step  12000  train  13.6079  val  13.2097  lr 0.00e+00  1200.0s
+
+best val loss 13.2097  ->  out/net_shadow.pt

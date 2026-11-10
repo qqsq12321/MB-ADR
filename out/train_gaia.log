@@ -1,0 +1,36 @@
+device: cuda
+robot: gaia  config: pico4_gaia_hand20.yaml
+independent joints: 16  (nq=20)
+
+dataset:
+  qsq_pico4_merged_v1      frames= 11256 valid= 11256 unique= 11254 (0% dups)
+
+train frames: 9566   val frames: 1688 (time split at 85%)
+model: 157,968 params, in_dim=80
+step      1  train 131.9430  val 124.1751  lr 3.00e-04     0.4s
+step    500  train  26.3781  val  27.1614  lr 2.99e-04    49.0s
+step   1000  train  27.0702  val  26.6657  lr 2.95e-04    98.7s
+step   1500  train  26.9547  val  26.4813  lr 2.89e-04   149.4s
+step   2000  train  27.5516  val  26.3956  lr 2.80e-04   198.8s
+step   2500  train  26.8134  val  26.3323  lr 2.69e-04   248.3s
+step   3000  train  26.2859  val  26.3166  lr 2.56e-04   297.9s
+step   3500  train  25.9687  val  26.2537  lr 2.41e-04   350.2s
+step   4000  train  25.7798  val  26.2572  lr 2.25e-04   401.0s
+step   4500  train  25.8650  val  26.2428  lr 2.07e-04   451.0s
+step   5000  train  26.7988  val  26.2410  lr 1.89e-04   500.2s
+step   5500  train  26.4132  val  26.2241  lr 1.70e-04   549.5s
+step   6000  train  26.8387  val  26.2224  lr 1.50e-04   598.4s
+step   6500  train  26.1431  val  26.2233  lr 1.30e-04   647.9s
+step   7000  train  25.9107  val  26.1987  lr 1.11e-04   697.0s
+step   7500  train  27.2225  val  26.1807  lr 9.26e-05   747.5s
+step   8000  train  25.1838  val  26.1768  lr 7.50e-05   799.1s
+step   8500  train  26.6964  val  26.1701  lr 5.87e-05   850.2s
+step   9000  train  25.9796  val  26.1691  lr 4.39e-05   901.7s
+step   9500  train  25.8038  val  26.1643  lr 3.10e-05   953.2s
+step  10000  train  26.0963  val  26.1625  lr 2.01e-05  1003.2s
+step  10500  train  26.0528  val  26.1577  lr 1.14e-05  1052.8s
+step  11000  train  27.5237  val  26.1556  lr 5.11e-06  1102.1s
+step  11500  train  26.2920  val  26.1541  lr 1.28e-06  1151.1s
+step  12000  train  26.0397  val  26.1541  lr 0.00e+00  1199.2s
+
+best val loss 26.1541  ->  out/net_gaia.pt

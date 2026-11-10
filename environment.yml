@@ -1,0 +1,21 @@
+# Fully self-contained environment.
+#
+#   conda env create -f environment.yml
+#   conda activate mbadr
+#
+# torch is installed separately so the CUDA build can be chosen to match the
+# driver; see README.
+name: mbadr
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy>=1.24
+  - scipy>=1.10
+  - pyyaml
+  - pillow
+  - pinocchio>=3.0
+  - pip
+  - pip:
+      - nlopt>=2.7
+      - mujoco>=3.0

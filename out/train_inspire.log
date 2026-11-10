@@ -1,0 +1,36 @@
+device: cuda
+robot: inspire  config: pico4_inspire_hand.yaml
+independent joints: 6  (nq=12)
+
+dataset:
+  qsq_pico4_merged_v1      frames= 11256 valid= 11256 unique= 11254 (0% dups)
+
+train frames: 9566   val frames: 1688 (time split at 85%)
+model: 155,398 params, in_dim=80
+step      1  train 131.6490  val 123.1414  lr 3.00e-04     0.4s
+step    500  train  64.3549  val  63.9808  lr 2.99e-04    45.8s
+step   1000  train  64.6384  val  63.8630  lr 2.95e-04    91.9s
+step   1500  train  64.2090  val  63.7973  lr 2.89e-04   138.4s
+step   2000  train  66.0825  val  63.7687  lr 2.80e-04   184.1s
+step   2500  train  63.0820  val  63.7442  lr 2.69e-04   230.7s
+step   3000  train  62.8015  val  63.7241  lr 2.56e-04   276.9s
+step   3500  train  60.3330  val  63.7242  lr 2.41e-04   325.0s
+step   4000  train  61.5236  val  63.7275  lr 2.25e-04   372.0s
+step   4500  train  58.8533  val  63.7182  lr 2.07e-04   418.8s
+step   5000  train  61.4837  val  63.7171  lr 1.89e-04   464.8s
+step   5500  train  62.8085  val  63.7090  lr 1.70e-04   511.0s
+step   6000  train  61.3183  val  63.7034  lr 1.50e-04   556.8s
+step   6500  train  65.8909  val  63.7016  lr 1.30e-04   602.6s
+step   7000  train  62.6233  val  63.6981  lr 1.11e-04   648.2s
+step   7500  train  67.7047  val  63.6969  lr 9.26e-05   694.6s
+step   8000  train  64.5663  val  63.6984  lr 7.50e-05   741.1s
+step   8500  train  67.0547  val  63.6948  lr 5.87e-05   788.9s
+step   9000  train  65.2536  val  63.6934  lr 4.39e-05   836.8s
+step   9500  train  64.6274  val  63.6926  lr 3.10e-05   884.4s
+step  10000  train  60.9393  val  63.6910  lr 2.01e-05   932.7s
+step  10500  train  62.8517  val  63.6902  lr 1.14e-05   979.8s
+step  11000  train  66.4578  val  63.6901  lr 5.11e-06  1025.8s
+step  11500  train  60.9866  val  63.6899  lr 1.28e-06  1071.5s
+step  12000  train  63.3372  val  63.6899  lr 0.00e+00  1117.4s
+
+best val loss 63.6899  ->  out/net_inspire.pt

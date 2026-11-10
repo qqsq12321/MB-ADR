@@ -1,0 +1,36 @@
+device: cuda
+robot: sharpa  config: pico4_sharpa_hand.yaml
+independent joints: 22  (nq=22)
+
+dataset:
+  qsq_pico4_merged_v1      frames= 11256 valid= 11256 unique= 11254 (0% dups)
+
+train frames: 9566   val frames: 1688 (time split at 85%)
+model: 159,510 params, in_dim=80
+step      1  train  88.5110  val  83.8694  lr 3.00e-04     0.5s
+step    500  train  10.2040  val  10.0946  lr 2.99e-04    50.4s
+step   1000  train   9.9391  val   9.5077  lr 2.95e-04   100.7s
+step   1500  train   9.8677  val   9.3595  lr 2.89e-04   151.0s
+step   2000  train   9.6711  val   9.2881  lr 2.80e-04   200.9s
+step   2500  train   9.6824  val   9.1889  lr 2.69e-04   251.0s
+step   3000  train   9.5115  val   9.1322  lr 2.56e-04   301.2s
+step   3500  train   9.4072  val   9.1114  lr 2.41e-04   351.0s
+step   4000  train   9.0320  val   9.1052  lr 2.25e-04   400.7s
+step   4500  train   9.3927  val   9.0914  lr 2.07e-04   450.6s
+step   5000  train   9.4736  val   9.0866  lr 1.89e-04   500.3s
+step   5500  train   9.5643  val   9.0747  lr 1.70e-04   551.1s
+step   6000  train   9.6831  val   9.0674  lr 1.50e-04   601.1s
+step   6500  train   8.8117  val   9.0657  lr 1.30e-04   651.3s
+step   7000  train   9.3882  val   9.0554  lr 1.11e-04   700.9s
+step   7500  train   9.3987  val   9.0322  lr 9.26e-05   751.2s
+step   8000  train   9.1476  val   9.0292  lr 7.50e-05   801.6s
+step   8500  train   9.1674  val   9.0330  lr 5.87e-05   852.6s
+step   9000  train   9.3154  val   9.0172  lr 4.39e-05   904.2s
+step   9500  train   9.1204  val   9.0189  lr 3.10e-05   956.5s
+step  10000  train   9.4686  val   9.0124  lr 2.01e-05  1008.2s
+step  10500  train   9.2198  val   9.0092  lr 1.14e-05  1060.2s
+step  11000  train   9.5345  val   9.0079  lr 5.11e-06  1112.4s
+step  11500  train   9.2231  val   9.0065  lr 1.28e-06  1163.4s
+step  12000  train   8.9059  val   9.0062  lr 0.00e+00  1213.7s
+
+best val loss 9.0062  ->  out/net_sharpa.pt

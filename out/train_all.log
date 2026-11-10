@@ -1,0 +1,40 @@
+device: cuda
+independent joints: 16  (nq=21)
+
+training recordings:
+  pico4_check              frames=  2553 valid=  2553 unique=  2482 (3% dups)
+  avp_20261016_143808      frames=  5895 valid=  5895 unique=  5883 (0% dups)
+  avp_20261019_103706      frames=   501 valid=   501 unique=   500 (0% dups)
+  avp_20261019_103717      frames=  1877 valid=  1876 unique=  1873 (0% dups)
+  avp_20261019_134551      frames=  1009 valid=  1009 unique=  1009 (0% dups)
+  avp_ningpinggai          frames=  7775 valid=  7775 unique=  1872 (76% dups)
+  avp_ningpinggai1         frames=  8375 valid=  8375 unique=  2172 (74% dups)
+  avp_ningpinggai2         frames= 13612 valid= 13612 unique=  3248 (76% dups)
+validation recordings:
+  avp_20261019_103754      frames=  3467 valid=  3467 unique=  3455 (0% dups)
+
+train frames: 19039   val frames: 3455
+model: 157,968 params, in_dim=80
+step      1  train  71.7603  val  91.0610  lr 3.00e-04     0.5s
+step   1000  train  18.1310  val  17.7422  lr 2.98e-04   162.4s
+step   2000  train  17.5248  val  17.3040  lr 2.93e-04   322.3s
+step   3000  train  16.7425  val  17.1018  lr 2.84e-04   482.0s
+step   4000  train  17.7810  val  17.0433  lr 2.71e-04   640.7s
+step   5000  train  17.7904  val  16.9095  lr 2.56e-04   801.8s
+step   6000  train  17.5837  val  16.9541  lr 2.38e-04   962.3s
+step   7000  train  17.1287  val  16.8284  lr 2.18e-04  1122.3s
+step   8000  train  16.7021  val  16.8295  lr 1.96e-04  1281.1s
+step   9000  train  17.4819  val  16.7778  lr 1.73e-04  1439.9s
+step  10000  train  17.2958  val  16.7483  lr 1.50e-04  1599.5s
+step  11000  train  18.3740  val  16.7218  lr 1.27e-04  1758.9s
+step  12000  train  16.6567  val  16.7268  lr 1.04e-04  1919.0s
+step  13000  train  17.2379  val  16.7070  lr 8.19e-05  2079.2s
+step  14000  train  17.8029  val  16.6781  lr 6.18e-05  2238.9s
+step  15000  train  17.3465  val  16.6835  lr 4.39e-05  2398.8s
+step  16000  train  16.0827  val  16.6638  lr 2.86e-05  2560.1s
+step  17000  train  16.9772  val  16.6628  lr 1.63e-05  2720.5s
+step  18000  train  17.2933  val  16.6620  lr 7.34e-06  2879.8s
+step  19000  train  16.9370  val  16.6673  lr 1.85e-06  3039.6s
+step  20000  train  16.6750  val  16.6673  lr 0.00e+00  3199.6s
+
+best val loss 16.6620  ->  out/net_all.pt
