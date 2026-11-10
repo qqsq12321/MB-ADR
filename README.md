@@ -1,5 +1,7 @@
 # MB-ADR
 
+[中文](README.zh.md) | English
+
 **M**odel-**B**ased **A**ny**D**ex**R**etargeting.
 
 End-to-end, **model-based** neural retargeting for dexterous robot hands.
