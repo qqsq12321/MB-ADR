@@ -1,0 +1,36 @@
+device: cuda
+robot: l20  config: pico4_linker_l20.yaml
+independent joints: 16  (nq=21)
+
+dataset:
+  qsq_pico4_merged_v1      frames= 11256 valid= 11256 unique= 11254 (0% dups)
+
+train frames: 9566   val frames: 1688 (time split at 85%)
+model: 157,968 params, in_dim=80
+step      1  train 103.4338  val  98.6169  lr 3.00e-04     0.5s
+step    500  train  19.8360  val  20.8324  lr 2.99e-04    51.3s
+step   1000  train  20.0839  val  20.4813  lr 2.95e-04   102.1s
+step   1500  train  21.3227  val  20.3452  lr 2.89e-04   151.9s
+step   2000  train  21.3461  val  20.3122  lr 2.80e-04   201.3s
+step   2500  train  19.3599  val  20.2774  lr 2.69e-04   251.0s
+step   3000  train  19.3578  val  20.2617  lr 2.56e-04   300.1s
+step   3500  train  19.1873  val  20.2135  lr 2.41e-04   349.0s
+step   4000  train  18.6054  val  20.1510  lr 2.25e-04   398.0s
+step   4500  train  18.0612  val  20.1144  lr 2.07e-04   447.1s
+step   5000  train  20.4448  val  20.1083  lr 1.89e-04   496.1s
+step   5500  train  19.6065  val  20.1060  lr 1.70e-04   545.4s
+step   6000  train  19.4318  val  20.0948  lr 1.50e-04   594.9s
+step   6500  train  20.1944  val  20.0929  lr 1.30e-04   645.2s
+step   7000  train  19.3567  val  20.0772  lr 1.11e-04   694.9s
+step   7500  train  21.1695  val  20.0736  lr 9.26e-05   744.3s
+step   8000  train  18.6684  val  20.0766  lr 7.50e-05   793.1s
+step   8500  train  20.1307  val  20.0684  lr 5.87e-05   842.2s
+step   9000  train  20.1737  val  20.0656  lr 4.39e-05   891.7s
+step   9500  train  19.7058  val  20.0613  lr 3.10e-05   940.6s
+step  10000  train  19.0748  val  20.0611  lr 2.01e-05   990.1s
+step  10500  train  19.9938  val  20.0597  lr 1.14e-05  1039.4s
+step  11000  train  21.4588  val  20.0579  lr 5.11e-06  1088.6s
+step  11500  train  20.2910  val  20.0575  lr 1.28e-06  1138.8s
+step  12000  train  19.8006  val  20.0570  lr 0.00e+00  1189.7s
+
+best val loss 20.0570  ->  out/net_l20.pt

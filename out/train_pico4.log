@@ -1,0 +1,19 @@
+device: cuda
+independent joints: 16  (nq=21)
+
+training recordings:
+  pico4_check              frames=  2553 valid=  2553 unique=  2482 (3% dups)
+validation recordings:
+  avp_20261019_103754      frames=  3467 valid=  3467 unique=  3455 (0% dups)
+
+train frames: 2482   val frames: 3455
+model: 157,968 params, in_dim=80
+step      1  train 135.8376  val  91.1813  lr 3.00e-04     0.4s
+step   1000  train  28.5655  val  25.7208  lr 2.97e-04    47.5s
+step   2000  train  29.8330  val  25.1676  lr 2.89e-04    95.3s
+step   3000  train  28.3104  val  25.2243  lr 2.75e-04   142.4s
+step   4000  train  28.5537  val  24.8636  lr 2.56e-04   189.4s
+step   5000  train  28.9237  val  25.2018  lr 2.33e-04   237.0s
+step   6000  train  25.5718  val  25.3925  lr 2.07e-04   284.3s
+step   7000  train  26.0383  val  25.9355  lr 1.79e-04   331.1s
+step   8000  train  29.2255  val  26.2834  lr 1.50e-04   377.3s
