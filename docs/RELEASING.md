@@ -1,7 +1,22 @@
 # Releasing MB-ADR
 
-The current version is `0.1.0b1`, a beta candidate. The work is prepared locally;
-no remote tag, GitHub release or PyPI publication is implied by the version file.
+## Published version
+
+[`v0.1.0b1`](https://github.com/qqsq12321/MB-ADR/releases/tag/v0.1.0b1) was
+published as a GitHub beta prerelease on 2026-11-12. The tag resolves to
+`8866bf0037a6d47de8a2e97b329173908aee9748`. The release includes the validated
+code wheel and `SHA256SUMS`; GitHub's source archives provide the full tagged
+checkout, including robot assets, data, configs and checkpoints.
+
+The package version remains `0.1.0b1` until the next version bump. Later fixes
+and documentation on `main` are listed under **Unreleased** in the
+[changelog](../CHANGELOG.md); they do not change the published snapshot.
+Published tags and assets should be preserved, with a new version for the next
+release. This GitHub release does not imply a PyPI publication.
+
+The release commit passed
+[hosted CPU checks](https://github.com/qqsq12321/MB-ADR/actions/runs/43162653034).
+Local and hosted validation evidence is recorded in [VALIDATION.md](VALIDATION.md).
 
 ## Validate the candidate
 

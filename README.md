@@ -146,6 +146,12 @@ uses the literal `--robot` value.
 The live CLIs currently use Pico; other inputs connect through the Python API.
 Physical control of a new robot hand requires its own output driver.
 
+Training, evaluation, recorded replay, Pico simulation and L20 teleoperation
+accept `--config PATH`. The Python inference API accepts
+`KeypointRetargeter(..., config_path=Path(...))`. Omitting it uses the bundled
+Pico config for the selected hand. Use the same YAML for training, inference
+and evaluation.
+
 ## Layout
 
 ```

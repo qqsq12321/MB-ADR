@@ -42,8 +42,10 @@ class LiveRetargeter(KeypointRetargeter):
         hand: str,
         device: torch.device,
         robot: str = "l20",
+        *,
+        config_path: Path | None = None,
     ):
-        super().__init__(checkpoint, hand, device, robot)
+        super().__init__(checkpoint, hand, device, robot, config_path=config_path)
 
         spec = HandSpec.from_name(robot, hand)
         self.mjcf_path = spec.mjcf_path
@@ -67,6 +69,8 @@ def main() -> None:
                         help="hand name or alias: l20, shadow, wuji, sharpa, gaia, inspire, ...")
     parser.add_argument("--checkpoint", default=None,
                         help="defaults to out/net_<robot>.pt")
+    parser.add_argument("--config", type=Path, default=None,
+                        help="adaptive YAML; defaults to the Pico config for --robot")
     parser.add_argument("--hand", default="right", choices=["left", "right"])
     parser.add_argument("--mode", default="relay", choices=["relay", "direct"])
     parser.add_argument("--relay-host", default="127.0.0.1")
@@ -92,14 +96,14 @@ def main() -> None:
     if not checkpoint.exists():
         raise SystemExit(f"checkpoint not found: {checkpoint}")
 
-    rt = LiveRetargeter(checkpoint, args.hand, device, args.robot)
+    rt = LiveRetargeter(checkpoint, args.hand, device, args.robot, config_path=args.config)
     ckpt = rt.ev.ckpt
     val = ckpt.get("val_loss")
     print(
         f"checkpoint step {ckpt.get('step')}, val {val:.4f}" if val
         else f"checkpoint step {ckpt.get('step')}"
     )
-    print(f"robot={args.robot}  hand={args.hand}  calibration={rt.ev.rotation}")
+    print(f"robot={args.robot}  hand={args.hand}  config={rt.config_path}  calibration={rt.ev.rotation}")
 
     model = rt.scene.model
     data = mujoco.MjData(model)

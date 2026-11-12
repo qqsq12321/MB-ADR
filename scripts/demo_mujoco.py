@@ -19,15 +19,12 @@ from pathlib import Path
 
 import numpy as np
 import torch
-import yaml
 
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from mbadr.chain import KinematicChain
 from mbadr.config import (
-    DEFAULT_CONFIG_PATH,
     HandSpec,
     default_config_path,
 )
@@ -47,11 +44,10 @@ class NetRetargeter:
         device: torch.device,
         robot: str = "l20",
         hand: str = "right",
+        *,
+        config_path: Path | None = None,
     ):
-        config_path = (
-            DEFAULT_CONFIG_PATH if robot in ("l20", "linker_l20")
-            else default_config_path(robot, "pico4")
-        )
+        config_path = Path(config_path) if config_path is not None else default_config_path(robot)
         self.ev = Evaluator(config_path, hand, checkpoint, device, robot)
         self.device = device
         self.robot = robot
@@ -76,6 +72,8 @@ def main() -> None:
     parser.add_argument("--hand", default="right", choices=["left", "right"])
     parser.add_argument("--checkpoint", default=None,
                         help="defaults to out/net_<robot>.pt")
+    parser.add_argument("--config", type=Path, default=None,
+                        help="adaptive YAML; defaults to the Pico config for --robot")
     parser.add_argument("--recording", default="pico4_check.pkl")
     parser.add_argument("--limit", type=int, default=0, help="0 = whole recording")
     parser.add_argument("--fps", type=float, default=30.0)
@@ -98,7 +96,7 @@ def main() -> None:
         raise SystemExit(f"checkpoint not found: {checkpoint}")
 
     # ---- data ------------------------------------------------------------
-    net = NetRetargeter(checkpoint, device, args.robot, args.hand)
+    net = NetRetargeter(checkpoint, device, args.robot, args.hand, config_path=args.config)
     ckpt = net.ev.ckpt
     val = ckpt.get("val_loss")
     print(f"checkpoint step {ckpt.get('step')}, val {val:.4f}" if val else
@@ -115,11 +113,7 @@ def main() -> None:
         kp_all = kp_all[: args.limit]
     print(f"frames: {len(kp_all)}  calibration: {net.ev.rotation}")
 
-    reference = None
-    if args.mode == "nlopt":
-        from mbadr.reference import load_reference
-
-        reference, _ = load_reference(args.robot, args.hand, "pico4")
+    reference = net.ev.ref if args.mode == "nlopt" else None
 
     # ---- model -----------------------------------------------------------
     # Shared background, hand upright with the palm facing the camera.

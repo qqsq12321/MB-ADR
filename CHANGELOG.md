@@ -1,6 +1,29 @@
 # Changelog
 
-## 0.1.0b1 — unreleased beta candidate
+## Unreleased
+
+### Fixed
+
+- Custom evaluation YAML now defines both the network objective and the NLopt
+  reference. Evaluation and recorded NLopt replay reuse that configured reference
+  instead of loading the default Pico objective again.
+
+### Added
+
+- Optional `config_path` for `KeypointRetargeter` and `--config` for recorded
+  replay, live Pico simulation and L20 teleoperation.
+- Hand/input-source integration guides in English and Chinese.
+
+### Documentation
+
+- Recorded the published beta, hosted CI results and the distinction between the
+  release snapshot and later changes on `main`.
+
+## [0.1.0b1](https://github.com/qqsq12321/MB-ADR/releases/tag/v0.1.0b1) — 2026-11-12
+
+Published as a GitHub beta prerelease from commit
+`8866bf0037a6d47de8a2e97b329173908aee9748`, with a verified code wheel and
+`SHA256SUMS`. The unreleased changes above are not included in that snapshot.
 
 ### Added
 

@@ -3,18 +3,21 @@
 import json
 import os
 import pickle
+from pathlib import Path
 import socket
 import struct
 import subprocess
 import sys
+import tempfile
 import threading
 import unittest
 import warnings
 
 import numpy as np
 import torch
+import yaml
 
-from mbadr.config import PROJECT_ROOT
+from mbadr.config import PROJECT_ROOT, default_config_path
 from mbadr.data import preprocess_keypoints
 from mbadr.live import KeypointRetargeter
 from mbadr.model import build_features
@@ -108,12 +111,18 @@ class LiveTests(unittest.TestCase):
         thread.start()
         try:
             env = dict(os.environ, OMP_NUM_THREADS="1", MKL_NUM_THREADS="1")
-            result = subprocess.run([
-                sys.executable, "-u", str(PROJECT_ROOT / "scripts/teleop_l20.py"),
-                "--checkpoint", str(self.checkpoint), "--device", "cpu", "--dry-run",
-                "--relay-port", str(port), "--l20-port", "/nonexistent-l20-test-port",
-                "--duration", "1.2", "--input-timeout", "0.1", "--stats-every", "0.3",
-            ], cwd="/tmp", env=env, capture_output=True, text=True, timeout=20)
+            with tempfile.TemporaryDirectory() as folder:
+                config_path = Path(folder) / "custom-live.yaml"
+                cfg = yaml.safe_load(default_config_path("l20").read_text())
+                cfg["retarget"]["mediapipe_rotation"]["right"]["z"] = 5.0
+                config_path.write_text(yaml.safe_dump(cfg))
+                result = subprocess.run([
+                    sys.executable, "-u", str(PROJECT_ROOT / "scripts/teleop_l20.py"),
+                    "--checkpoint", str(self.checkpoint), "--device", "cpu", "--dry-run",
+                    "--config", str(config_path),
+                    "--relay-port", str(port), "--l20-port", "/nonexistent-l20-test-port",
+                    "--duration", "1.2", "--input-timeout", "0.1", "--stats-every", "0.3",
+                ], cwd="/tmp", env=env, capture_output=True, text=True, timeout=20)
         finally:
             stop.set()
             server.close()
@@ -121,6 +130,7 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("DRY RUN: serial output disabled", result.stdout)
+        self.assertIn(f"config={config_path}", result.stdout)
         self.assertIn("L20 registers:", result.stdout)
         self.assertIn("target updates paused", result.stdout[result.stdout.rfind("L20 registers:"):])
         self.assertNotIn("GLFW", result.stderr)

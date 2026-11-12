@@ -33,6 +33,8 @@ def uint8(value: str) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--checkpoint", type=Path, default=OUT_DIR / "net_l20.pt")
+    parser.add_argument("--config", type=Path, default=None,
+                        help="adaptive YAML; defaults to the bundled Pico L20 config")
     parser.add_argument("--hand", choices=("right", "left"), default="right")
     parser.add_argument("--device", default=None)
     parser.add_argument("--smooth", type=float, default=0.3,
@@ -92,10 +94,12 @@ def main() -> None:
     if not args.checkpoint.is_file():
         parser.error(f"checkpoint not found: {args.checkpoint}")
     device = torch.device(args.device or ("cuda" if torch.cuda.is_available() else "cpu"))
-    rt = KeypointRetargeter(args.checkpoint, args.hand, device, "l20", smooth=args.smooth)
+    rt = KeypointRetargeter(args.checkpoint, args.hand, device, "l20",
+                           smooth=args.smooth, config_path=args.config)
     validate_checkpoint(rt, args.hand)
     L20Mapper(rt.chain.joint_names)  # Validate every motor mapping before opening serial.
     print(f"checkpoint step {rt.ev.ckpt.get('step')}, hand={args.hand}, device={device}, smooth={args.smooth}")
+    print(f"config={rt.config_path}; calibration={rt.ev.rotation}")
     print(f"Pico={args.mode}; L20={args.l20_port} @ {args.l20_baudrate}, slave_id={slave_id:#x}")
     print("DRY RUN: serial output disabled" if args.dry_run else "L20 hardware output enabled")
 

@@ -21,25 +21,20 @@ from __future__ import annotations
 
 import argparse
 import json
-import pickle
 import time
 from pathlib import Path
 
 import numpy as np
 import torch
-import yaml
 
-from .chain import KinematicChain
 from .checkpoint import load_checkpoint
 from .config import (
-    DEFAULT_CONFIG_PATH,
     OUT_DIR,
-    HandSpec,
     default_config_path,
 )
 from .data import RECORDING_ROOT, build_dataset
 from .model import RetargetNet, build_features
-from .reference import load_reference
+from .reference import AdaptiveConfig, ReferenceOptimizer
 from .train import load_loss_spec
 
 
@@ -82,8 +77,9 @@ class Evaluator:
         device,
         robot: str = "l20",
     ):
+        self.config_path = Path(config_path)
         self.cfg, self.chain, self.fk, self.loss_fn, self.params, self.rotation, self.norm_delta = (
-            load_loss_spec(config_path, hand, robot)
+            load_loss_spec(self.config_path, hand, robot)
         )
         self.loss_fn = self.loss_fn.to(device=device, dtype=torch.float32)
         self.fk = self.loss_fn.fk
@@ -92,7 +88,10 @@ class Evaluator:
         self.robot = robot
         # The reference solver works in this project's URDF joint order, so no
         # joint-order conversion is needed when exchanging qpos vectors.
-        self.ref, _ = load_reference(robot, hand, "pico4")
+        self.ref = ReferenceOptimizer(
+            self.loss_fn.spec,
+            AdaptiveConfig.from_retarget_section(self.cfg["retarget"]),
+        )
 
         ckpt = load_checkpoint(checkpoint)
         self.net = RetargetNet(
@@ -176,7 +175,7 @@ def main() -> None:
     print(f"device: {device}")
     print(f"checkpoint: {args.checkpoint} (validated at step {evaluator.ckpt.get('step')})")
 
-    reference, _ = load_reference(args.robot, args.hand, "pico4")
+    reference = evaluator.ref
 
     # Build the evaluation frame set. With --data-npy the validation tail of the
     # same Pico capture the model was trained on is used, so the comparison is

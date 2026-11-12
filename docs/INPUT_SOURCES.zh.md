@@ -140,7 +140,8 @@ python -m mbadr.train --robot l20 --hand right \
     --out out/net_l20_my_source.pt
 ```
 
-`default_config_path("l20", "my_source")` 能解析该路径，但 `KeypointRetargeter` 当前固定读取 `pico4` 配置，也不会自动根据 checkpoint 选择配置。自定义标定的网络推理可使用现有的底层 API，显式传入同一 YAML：
+`default_config_path("l20", "my_source")` 能解析该路径。实时推理时，通过
+`config_path` 显式传入训练使用的同一 YAML：
 
 ```python
 from pathlib import Path
@@ -148,22 +149,35 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from mbadr.data import preprocess_keypoints
-from mbadr.evaluate import Evaluator
+from mbadr.live import KeypointRetargeter
 
-device = torch.device("cpu")
-ev = Evaluator(
-    Path("configs/my_source/my_source_linker_l20.yaml"),
-    "right", Path("out/net_l20_my_source.pt"), device, "l20",
+rt = KeypointRetargeter(
+    checkpoint=Path("out/net_l20_my_source.pt"),
+    hand="right",
+    device=torch.device("cpu"),
+    robot="l20",
+    smooth=0.3,
+    config_path=Path("configs/my_source/my_source_linker_l20.yaml"),
 )
 raw = np.load("data/my_source_right.npy", allow_pickle=False)[0]
-kp = preprocess_keypoints(raw, ev.hand, ev.rotation, normalize_scale=True)
-with torch.no_grad():
-    x = ev.net_solve(torch.from_numpy(kp[None]).float().to(device))
-    q = ev.fk.expand(x)[0].cpu().numpy()
-print(dict(zip(ev.chain.joint_names, q.tolist())))
+q = rt(raw)
+if q is None:
+    raise RuntimeError("Invalid hand frame")
+print(dict(zip(rt.chain.joint_names, q.tolist())))
 ```
 
-这里假定 `raw` 已通过采集层有效性检查；此底层示例不附带上节的无效帧拒绝、新鲜度检查和 EMA。若加平滑，应对 `x` 的独立关节平滑后再展开 mimic。
+推理器会拒绝无效点并在独立关节上平滑；采集层仍需按第 3 节检查新鲜度。
+评估也传入同一份 YAML，网络和 NLopt 参考求解器将使用一致的目标函数：
 
-当前 `Evaluator` / `mbadr.evaluate` 的 NLopt 参考求解器仍固定读取 `pico4` 配置；上例只调用网络 `net_solve`。比较专属 YAML 下的网络与参考求解结果时，需用同一 YAML 的 `retarget` 构造 `AdaptiveConfig` 和 `ReferenceOptimizer`，并确保双方使用相同预处理；仅给评估命令加 `--config` 尚不能保证两侧目标一致。
+```bash
+python -m mbadr.evaluate --robot l20 --hand right \
+    --config configs/my_source/my_source_linker_l20.yaml \
+    --checkpoint out/net_l20_my_source.pt --data-npy data/my_source_right.npy \
+    --limit 100 --out out/eval_l20_my_source.json
+```
+
+`demo_mujoco.py`、`demo_pico4.py` 和 `mbadr-l20` 也支持 `--config`；
+后两者的采集入口仍是 Pico，其他设备继续使用自己的采集入口。
+省略配置时保留原有 Pico 默认值，不会根据 checkpoint 自动选择 YAML；
+显式指定的文件不存在时会报错。以上自定义配置改进属于 `main` 的未发布变更，
+已发布 `v0.1.0b1` 的接口行为以该标签源码为准。

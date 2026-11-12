@@ -16,6 +16,8 @@ class KeypointRetargeter:
 
     Call once per input sample when smoothing is enabled. The EMA operates on
     independent joints, before mimic expansion, so coupling remains consistent.
+    config_path selects the same calibration/objective YAML used for training;
+    omitting it preserves the bundled Pico configuration for the selected hand.
     """
 
     def __init__(
@@ -25,10 +27,13 @@ class KeypointRetargeter:
         device: torch.device,
         robot: str = "l20",
         smooth: float = 0.0,
+        *,
+        config_path: Path | None = None,
     ):
         if not 0.0 <= smooth <= 1.0:
             raise ValueError("smooth must be between 0 and 1 (0 disables smoothing)")
-        self.ev = Evaluator(default_config_path(robot), hand, checkpoint, device, robot)
+        self.config_path = Path(config_path) if config_path is not None else default_config_path(robot)
+        self.ev = Evaluator(self.config_path, hand, checkpoint, device, robot)
         self.device = device
         self.hand = hand
         self.robot = robot

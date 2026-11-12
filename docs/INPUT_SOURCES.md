@@ -179,10 +179,8 @@ python -m mbadr.train --robot l20 --hand right \
     --out out/net_l20_my_source.pt
 ```
 
-`default_config_path("l20", "my_source")` resolves this path. However,
-`KeypointRetargeter` currently selects the `pico4` config and does not infer a
-config from the checkpoint. For network inference with custom calibration,
-explicitly supply the same YAML through the existing lower-level API:
+`default_config_path("l20", "my_source")` resolves this path. For live inference,
+explicitly pass the same YAML used for training as `config_path`:
 
 ```python
 from pathlib import Path
@@ -190,29 +188,37 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from mbadr.data import preprocess_keypoints
-from mbadr.evaluate import Evaluator
+from mbadr.live import KeypointRetargeter
 
-device = torch.device("cpu")
-ev = Evaluator(
-    Path("configs/my_source/my_source_linker_l20.yaml"),
-    "right", Path("out/net_l20_my_source.pt"), device, "l20",
+rt = KeypointRetargeter(
+    checkpoint=Path("out/net_l20_my_source.pt"),
+    hand="right",
+    device=torch.device("cpu"),
+    robot="l20",
+    smooth=0.3,
+    config_path=Path("configs/my_source/my_source_linker_l20.yaml"),
 )
 raw = np.load("data/my_source_right.npy", allow_pickle=False)[0]
-kp = preprocess_keypoints(raw, ev.hand, ev.rotation, normalize_scale=True)
-with torch.no_grad():
-    x = ev.net_solve(torch.from_numpy(kp[None]).float().to(device))
-    q = ev.fk.expand(x)[0].cpu().numpy()
-print(dict(zip(ev.chain.joint_names, q.tolist())))
+q = rt(raw)
+if q is None:
+    raise RuntimeError("Invalid hand frame")
+print(dict(zip(rt.chain.joint_names, q.tolist())))
 ```
 
-This assumes acquisition has already validated `raw`. The lower-level example
-does not implement the invalid-frame rejection, freshness checks or EMA above.
-If smoothing is added, apply it to independent joints `x` before mimic expansion.
+The retargeter rejects invalid points and smooths independent joints. Acquisition
+still needs the freshness handling in section 3. Pass the same YAML to evaluation
+so the network and NLopt reference use matching objectives:
 
-The NLopt reference in `Evaluator` / `mbadr.evaluate` still selects the `pico4`
-config; this example calls only the network's `net_solve`. To compare against a
-reference using custom calibration, construct `AdaptiveConfig` and
-`ReferenceOptimizer` from that YAML's same `retarget` section and use identical
-preprocessing. Passing `--config` to evaluation alone does not yet ensure
-matching objectives on both sides.
+```bash
+python -m mbadr.evaluate --robot l20 --hand right \
+    --config configs/my_source/my_source_linker_l20.yaml \
+    --checkpoint out/net_l20_my_source.pt --data-npy data/my_source_right.npy \
+    --limit 100 --out out/eval_l20_my_source.json
+```
+
+`demo_mujoco.py`, `demo_pico4.py` and `mbadr-l20` also accept `--config`.
+The latter two still acquire from Pico; use your own entry point for other
+devices. Omitting a config preserves the Pico defaults, without inferring YAML
+from the checkpoint; a missing explicitly selected file raises an error.
+These custom-configuration improvements are unreleased changes on `main`.
+The published `v0.1.0b1` interfaces follow that tagged source.
