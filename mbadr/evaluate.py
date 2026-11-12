@@ -30,6 +30,7 @@ import torch
 import yaml
 
 from .chain import KinematicChain
+from .checkpoint import load_checkpoint
 from .config import (
     DEFAULT_CONFIG_PATH,
     OUT_DIR,
@@ -93,12 +94,12 @@ class Evaluator:
         # joint-order conversion is needed when exchanging qpos vectors.
         self.ref, _ = load_reference(robot, hand, "pico4")
 
-        ckpt = torch.load(checkpoint, map_location=device)
+        ckpt = load_checkpoint(checkpoint)
         self.net = RetargetNet(
             in_dim=ckpt["in_dim"],
             num_joints=ckpt["num_joints"],
-            lower=torch.from_numpy(ckpt["lower"]),
-            upper=torch.from_numpy(ckpt["upper"]),
+            lower=ckpt["lower"],
+            upper=ckpt["upper"],
             hidden=ckpt["hidden"],
             layers=ckpt["layers"],
         ).to(device)

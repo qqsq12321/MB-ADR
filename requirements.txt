@@ -1,19 +1,4 @@
-# Core
-numpy>=1.24
-scipy>=1.10
-pyyaml
-
-# Optimisation reference solver
-nlopt>=2.7
-
-# Differentiable FK and training
-# (install the CUDA build matching your driver, e.g.
-#  pip install torch --index-url https://download.pytorch.org/whl/cu121)
-torch>=2.0
-
-# Kinematics oracle for the verification scripts
-pinocchio>=3.0
-
-# Visualisation
-mujoco>=3.0
-pillow
+# Install the desired CPU/CUDA torch wheel first. Then, from the checkout root:
+# python -m pip install -r requirements.txt -c constraints/py310-torch25.txt
+# Dependency definitions and optional groups live in pyproject.toml.
+-e .[all]

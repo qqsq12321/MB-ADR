@@ -19,3 +19,4 @@ dependencies:
   - pip:
       - nlopt>=2.7
       - mujoco>=3.0
+      - pyserial>=3.5

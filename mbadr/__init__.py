@@ -9,10 +9,12 @@ Supported hands are defined in :mod:`.robot_configs`; build a spec with
 """
 
 from .chain import KinematicChain
+from ._version import __version__
 from .config import HandSpec, SUPPORTED_HANDS, default_config_path
 from .fk_numpy import NumpyFK
 
 __all__ = [
+    "__version__",
     "KinematicChain",
     "HandSpec",
     "NumpyFK",

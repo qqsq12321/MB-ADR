@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "ownership_confirmed": "2026-11-12",
+  "artifacts": [
+    {
+      "path": "data/qsq_pico4_merged_v1.npy",
+      "bytes": 2836640,
+      "sha256": "edcbf3015a6539486aa368dc0d087ba3ed643d9f440924dd23922c1c203814c1",
+      "license": "MIT",
+      "origin": "maintainer self-collected hand landmarks"
+    },
+    {
+      "path": "data/recordings/avp_20261019_103754.pkl",
+      "bytes": 2035556,
+      "sha256": "9d2f0a1adac24754c71a67cde274fba937db773c5e8b014c2530383870ee01d2",
+      "license": "MIT",
+      "origin": "maintainer self-collected hand landmarks"
+    },
+    {
+      "path": "data/recordings/pico4_check.pkl",
+      "bytes": 1498964,
+      "sha256": "00d254e1cb0dff7c3691679ca8a049aea127a633a43a481acd3ae27b48f75265",
+      "license": "MIT",
+      "origin": "maintainer self-collected hand landmarks"
+    },
+    {
+      "path": "out/net_all.pt",
+      "bytes": 638882,
+      "sha256": "f10bd97f425f72d62758bd37ad19db621e55321c6c040a1eb159d611ea3d01b8",
+      "license": "MIT",
+      "origin": "maintainer self-trained weights"
+    },
+    {
+      "path": "out/net_gaia.pt",
+      "bytes": 638842,
+      "sha256": "1a16aa1d8892c7a854fd9def0ab4fe163aee118f8d7c59a2145e96db49fe442f",
+      "license": "MIT",
+      "origin": "maintainer self-trained weights"
+    },
+    {
+      "path": "out/net_inspire.pt",
+      "bytes": 628098,
+      "sha256": "f28c7ddc1e077ec9e22737ef6c560db4d20b3a99c321f0411c0245f6ea88d7ff",
+      "license": "MIT",
+      "origin": "maintainer self-trained weights"
+    },
+    {
+      "path": "out/net_l20.pt",
+      "bytes": 638818,
+      "sha256": "7d328eccc0aa4e99744f3bb1f87f2b7084a0f616e9db40d27a53cab96754a71e",
+      "license": "MIT",
+      "origin": "maintainer self-trained weights"
+    },
+    {
+      "path": "out/net_shadow.pt",
+      "bytes": 645034,
+      "sha256": "9af02a14a1d981af2ce6ea297ec4c8c74b8f2b3c2e788d902b36d1651586c6ce",
+      "license": "MIT",
+      "origin": "maintainer self-trained weights"
+    },
+    {
+      "path": "out/net_sharpa.pt",
+      "bytes": 645034,
+      "sha256": "20249f519770c94f4c047747f98040032d3780f4475cae6578a3419d3b143244",
+      "license": "MIT",
+      "origin": "maintainer self-trained weights"
+    },
+    {
+      "path": "out/net_wuji.pt",
+      "bytes": 642938,
+      "sha256": "16066c986e69d3793d275d3c80d2dc341776f4aab788b45814413b2d879f8c2d",
+      "license": "MIT",
+      "origin": "maintainer self-trained weights"
+    }
+  ]
+}

@@ -79,7 +79,7 @@ def _parse_csv_floats(s: str) -> list[float]:
             try:
                 out.append(float(part))
             except ValueError:
-                out.append(0.0)
+                return []
     return out
 
 
@@ -102,13 +102,17 @@ def _parse_hand_joints(hand_j: dict) -> Optional[np.ndarray]:
     for dst_i, src_i in enumerate(JOINT_21_INDICES):
         joint = joints[src_i]
         if not isinstance(joint, dict):
-            continue
+            return None
         p = joint.get('p')
         if not isinstance(p, str):
-            continue
+            return None
         vals = _parse_csv_floats(p)
-        if len(vals) >= 3:
-            result[dst_i] = vals[:3]
+        if len(vals) < 3:
+            return None
+        result[dst_i] = vals[:3]
+
+    if not np.isfinite(result).all():
+        return None
 
     result -= result[0].copy()
     return result
@@ -156,10 +160,12 @@ class _RelayFrameParser:
         while len(self._buf) >= 8:
             id_len = struct.unpack_from('<I', self._buf, 0)[0]
             # sanity: device_id should be a short ASCII string
-            if id_len > 256 or len(self._buf) < 4 + id_len + 4:
+            if id_len > 256:
                 # corrupt, try shifting
                 del self._buf[0]
                 continue
+            if len(self._buf) < 4 + id_len + 4:
+                return None
             json_len = struct.unpack_from('<I', self._buf, 4 + id_len)[0]
             if json_len > 10_000_000:
                 del self._buf[0]
@@ -274,6 +280,7 @@ class Pico4:
         self._left_hand: Optional[np.ndarray] = None
         self._right_hand: Optional[np.ndarray] = None
         self._last_update: float = 0.0
+        self._hand_updates = {'left': 0.0, 'right': 0.0}
 
         if self._mode == 'relay':
             self._relay_host = relay_host
@@ -297,6 +304,37 @@ class Pico4:
             right = self._right_hand.copy() if self._right_hand is not None else empty.copy()
         return {'left_fingers': left, 'right_fingers': right}
 
+    def get_hand_sample(self, hand: str) -> tuple[Optional[np.ndarray], float]:
+        """Latest active sample and its host monotonic receive time.
+
+        Timestamps are per hand: left-hand traffic cannot refresh stale right
+        tracking. Unlike the compatibility getter above, inactive/disconnected
+        tracking returns None. Consumers can reject samples older than their
+        timeout and avoid reprocessing a sample with the same timestamp.
+        """
+        if hand not in ('left', 'right'):
+            raise ValueError("hand must be 'left' or 'right'")
+        with self._lock:
+            timestamp = self._hand_updates[hand]
+            value = self._left_hand if hand == 'left' else self._right_hand
+            return (value.copy(), timestamp) if timestamp and value is not None else (None, 0.0)
+
+    def _update_hands(self, left, right) -> None:
+        now = time.monotonic()
+        with self._lock:
+            if left is not None:
+                self._left_hand = left
+            if right is not None:
+                self._right_hand = right
+            self._hand_updates['left'] = now if left is not None else 0.0
+            self._hand_updates['right'] = now if right is not None else 0.0
+            if left is not None or right is not None:
+                self._last_update = now
+
+    def _invalidate_tracking(self) -> None:
+        with self._lock:
+            self._hand_updates = {'left': 0.0, 'right': 0.0}
+
     def stop(self) -> None:
         self._stop.set()
         if self._thread.is_alive():
@@ -317,6 +355,7 @@ class Pico4:
             except (ConnectionRefusedError, OSError) as e:
                 logger.warning('Pico4 relay connect failed: %s, retry in %.1fs', e, _RELAY_RECONNECT_S)
             finally:
+                self._invalidate_tracking()
                 try:
                     sock.close()
                 except Exception:
@@ -341,13 +380,7 @@ class Pico4:
                 if payload is None:
                     break
                 left, right = _parse_tracking_json(payload)
-                with self._lock:
-                    if left is not None:
-                        self._left_hand = left
-                    if right is not None:
-                        self._right_hand = right
-                    if left is not None or right is not None:
-                        self._last_update = time.monotonic()
+                self._update_hands(left, right)
         logger.info('Pico4 relay connection closed')
 
     # ── direct mode ───────────────────────────────────────────────────────
@@ -405,18 +438,13 @@ class Pico4:
                     if frame is None:
                         break
                     if frame['cmd'] in (_CMD_HEARTBEAT, _CMD_CONNECT,
-                                        _CMD_BATTERY, _CMD_SENSOR):
+                                        _CMD_BATTERY, _CMD_SENSOR, _CMD_DEVICE_STATE_JSON):
                         last_hb = time.monotonic()
                     if frame['cmd'] == _CMD_DEVICE_STATE_JSON:
                         left, right = _parse_tracking_json(frame['payload'])
-                        with self._lock:
-                            if left is not None:
-                                self._left_hand = left
-                            if right is not None:
-                                self._right_hand = right
-                            if left is not None or right is not None:
-                                self._last_update = time.monotonic()
+                        self._update_hands(left, right)
         finally:
+            self._invalidate_tracking()
             conn.close()
             logger.info('Pico4 direct: client disconnected')
 

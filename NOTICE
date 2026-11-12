@@ -1,0 +1,23 @@
+MB-ADR
+Copyright (c) 2026 MB-ADR contributors
+
+The root MIT license covers original MB-ADR code, documentation, configuration,
+and the maintainer-owned recordings, keypoint data and trained checkpoints.
+The maintainer confirmed ownership and permission to distribute the recordings,
+keypoints and trained weights on 2026-11-12. Robot assets under assets/ retain
+their own licenses; they are not relicensed by the root MIT license. See
+THIRD_PARTY_NOTICES.md and assets/manifest.json for scope and evidence.
+
+Pico receiver/protocol work and L20 calibration/protocol adaptation build on
+AnyDexRetarget, https://github.com/qqsq12321/AnyDexRetarget (also distributed at
+https://gitee.com/gx_robot/AnyDexRetarget), MIT License:
+Copyright (c) 2025 Shiquan Qiu
+The complete upstream MIT notice is in third_party/licenses/AnyDexRetarget-MIT.txt.
+
+The L20 GEORT-derived model and calibration provenance must be distinguished
+from original MB-ADR code and weights. GeoRT's distribution declares CC BY-NC
+4.0; the root MIT license does not remove upstream noncommercial restrictions.
+See the per-asset notices for the verified scope and remaining provenance gaps.
+
+XRoboToolkit is an external headset application from XR-Robotics/PICO. It is
+linked, not bundled or relicensed by MB-ADR.
