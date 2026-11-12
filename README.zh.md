@@ -108,11 +108,18 @@ wheel 只包含代码与声明，不携带手模型、录像和权重；使用�
 | `gaia` | 20 | 16 | 4 | Gaia Hand20 |
 | `inspire` | 12 | 6 | 6 | Inspire Hand，欠驱动程度最高 |
 
-手型定义在 `mbadr/robot_configs.py`，资产放在 `assets/`，配置放在 `configs/pico4/`。新增一只手只需要在那里加一条记录、补上对应的 URDF/MJCF；FK、loss、训练和评估代码都是手型无关的。左右手的 link 命名约定按厂商各自镜像处理（`rh_`→`lh_`、`right_`→`left_`）。
+手型定义在 `mbadr/robot_configs.py`，资产放在 `assets/`，配置放在 `configs/pico4/`。新增手型需准备模型、定义任务点、配置尺度与坐标标定，并训练对应权重；FK、loss、训练和评估共用现有实现。
 
 表中六只手均具备配置、资产与 `out/net_<robot>.pt`；当前自带 checkpoint 均标注为右手。
 真机输出目前只实现 L20 RS485，其他手型支持训练、评估和仿真。
 仿真示例建议使用表中的短名称：默认 checkpoint 文件名直接使用 `--robot` 的字面值。
+
+## 扩展项目
+
+- [新增灵巧手](docs/ADDING_HAND.zh.md)：准备 URDF/MJCF、注册手型、设置任务点与 mimic、标定 YAML、训练及仿真。
+- [接入其他输入源](docs/INPUT_SOURCES.zh.md)：21 点数据约定、单位与坐标系转换、推理 API、新鲜度处理及自定义数据训练。
+
+现有实时命令使用 Pico；其他输入源通过 Python API 接入。新增手型的真机控制需要实现对应的输出驱动。
 
 ## 目录结构
 
@@ -151,21 +158,6 @@ configs/pico4/         每只手的 retargeting YAML
 data/                  关键点数据集（.npy）以及 recordings/（.pkl，供 demo 使用）
 out/                   checkpoint 与评估结果 JSON
 tests/                 校准映射、Modbus、Pico 数据有效性与完整 dry-run 测试
-```
-
-## 正确性验证
-
-目标函数有两份独立实现（Torch 和 NumPy），互相校验；运动学部分对照 Pinocchio 校验。这些检查不是摆设——靠它们真的发现了四个 bug：
-
-1. mimic 关节的限位裁剪语义问题（`index_pip` 上限 × 0.89 会超出 `index_dip` 的上限）；
-2. Torch FK 里的矩阵乘法顺序写反了（URDF 的关节旋转应作用在右侧）；
-3. URDF 关节顺序与 Pinocchio 关节顺序之间的转换问题；
-4. `AdaptiveParams` 的默认值当初是从 L20 的 YAML 里抄来的，而不是参考实现自己的默认值——这个问题在只支持 L20 时完全不可见，因为它的配置文件把每个键都显式写出来了。
-
-```bash
-python scripts/verify_fk.py --robot all       # 位置误差 1e-16 m，Jacobian 误差 1e-10
-python scripts/verify_fk_torch.py             # 前向误差 3.7e-8 m（float32），Jacobian 误差 9.7e-17
-python scripts/verify_loss.py --robot all     # loss 误差 2.3e-13，梯度误差 5.5e-8
 ```
 
 ## 训练

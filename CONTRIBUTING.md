@@ -40,6 +40,10 @@ in `docs/HARDWARE_VALIDATION.md`.
 
 ## Changes to retargeting or robot models
 
+Start with [adding a hand](docs/ADDING_HAND.md) or
+[connecting another input source](docs/INPUT_SOURCES.md) for integration steps.
+中文版：[新增灵巧手](docs/ADDING_HAND.zh.md) · [其他输入源](docs/INPUT_SOURCES.zh.md)。
+
 - Keep NumPy and Torch objectives numerically consistent.
 - Preserve joint-name mappings, independent/mimic coupling and joint limits.
 - Reuse `preprocess_keypoints` for both training and live input.

@@ -128,16 +128,23 @@ calibration and real-world errors still require hardware mapping and validation.
 | `inspire` | 12 | 6 | 6 | Inspire Hand, most under-actuated |
 
 Hand definitions live in `mbadr/robot_configs.py` with their assets under
-`assets/` and their configs under `configs/pico4/`. Adding a hand means adding
-an entry there plus its URDF/MJCF; the FK, loss, training and evaluation code is
-hand-agnostic. Left/right link naming conventions are mirrored per manufacturer
-(`rh_`→`lh_`, `right_`→`left_`).
+`assets/` and configs under `configs/pico4/`. Adding a hand requires its models,
+task-point definitions, scale/frame calibration and a trained checkpoint. FK,
+loss, training and evaluation share the existing implementations.
 
 All six rows have configs, assets and `out/net_<robot>.pt`; the bundled
 checkpoints are right-hand trained. Physical output currently supports L20
 RS485 only; the other hands support training, evaluation and simulation.
 Use the short names in the table for demos: the default checkpoint filename
 uses the literal `--robot` value.
+
+## Extending the project
+
+- [Add a robot hand](docs/ADDING_HAND.md): prepare URDF/MJCF, register task points and mimic joints, calibrate YAML, train and simulate.
+- [Connect another input source](docs/INPUT_SOURCES.md): the 21-point contract, units/frames, inference API, sample freshness and training on your own data.
+
+The live CLIs currently use Pico; other inputs connect through the Python API.
+Physical control of a new robot hand requires its own output driver.
 
 ## Layout
 
@@ -176,25 +183,6 @@ configs/pico4/         retargeting YAML per hand
 data/                  keypoint dataset (.npy) and recordings/ (.pkl, for demos)
 out/                   checkpoints and evaluation JSON
 tests/                 mapping, Modbus, Pico validity and complete dry-run tests
-```
-
-## Verification
-
-Two independent implementations of the objective (Torch and NumPy) are checked
-against each other, and the kinematics is checked against Pinocchio. The checks
-are not decorative — four real bugs were found this way:
-
-1. mimic clipping semantics (`index_pip` max × 0.89 overshoots `index_dip` max);
-2. matrix order in the Torch FK (URDF applies joint rotation on the right);
-3. joint-order conversion between URDF and Pinocchio orderings;
-4. `AdaptiveParams` defaults copied from L20's YAML instead of the reference's
-   own defaults — invisible while only L20 was supported, because its config
-   writes every key explicitly.
-
-```bash
-python scripts/verify_fk.py --robot all       # positions to 1e-16 m, Jacobians to 1e-10
-python scripts/verify_fk_torch.py             # forward 3.7e-8 m (f32), Jacobian 9.7e-17
-python scripts/verify_loss.py --robot all     # loss 2.3e-13, gradient 5.5e-8
 ```
 
 ## Train
