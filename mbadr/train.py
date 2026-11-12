@@ -27,11 +27,13 @@ import torch
 import yaml
 
 from .chain import KinematicChain
+from .checkpoint import FORMAT_VERSION
 from .config import (
     DEFAULT_CONFIG_PATH,
     OUT_DIR,
     HandSpec,
     default_config_path,
+    resolve_robot_name,
 )
 from .data import (
     RECORDING_ROOT,
@@ -56,7 +58,8 @@ def load_loss_spec(config_path: Path, hand: str, robot: str = "l20"):
     Returns:
         ``(cfg, chain, fk, loss_fn, params, rotation, norm_delta)``.
     """
-    cfg = yaml.safe_load(open(config_path))
+    with Path(config_path).open() as stream:
+        cfg = yaml.safe_load(stream)
     cfg.setdefault("optimizer", {})["hand_side"] = hand
     rc = cfg["retarget"]
 
@@ -264,14 +267,18 @@ def main() -> None:
                 Path(args.out).parent.mkdir(parents=True, exist_ok=True)
                 torch.save(
                     {
+                        "format_version": FORMAT_VERSION,
                         "state_dict": net.state_dict(),
                         "in_dim": in_dim,
                         "num_joints": chain.num_independent,
                         "hidden": args.hidden,
                         "layers": args.layers,
-                        "lower": ilim[:, 0],
-                        "upper": ilim[:, 1],
-                        "config": str(args.config),
+                        "lower": torch.from_numpy(ilim[:, 0].copy()),
+                        "upper": torch.from_numpy(ilim[:, 1].copy()),
+                        "robot": resolve_robot_name(args.robot),
+                        "joint_names": chain.joint_names,
+                        "independent_names": chain.independent_names,
+                        "config": config_path.name,
                         "hand": args.hand,
                         "rotation": rotation,
                         "val_loss": best,

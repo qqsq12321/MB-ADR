@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "hash_algorithm": "sha256(relative_path + NUL + file_sha256 + LF), sorted paths",
+  "components": [
+    {
+      "path": "assets/shadow_hand",
+      "license": "Apache-2.0",
+      "notice": "assets/shadow_hand/LICENSE",
+      "source": "https://github.com/google-deepmind/mujoco_menagerie/tree/main/shadow_hand",
+      "files": 26,
+      "bytes": 4796215,
+      "tree_sha256": "a1668efaab75172361fc949048253badbd09484e2c969994497dd87a03a92b5c"
+    },
+    {
+      "path": "assets/wuji_hand",
+      "license": "MIT",
+      "notice": "assets/wuji_hand/LICENSE",
+      "source": "https://github.com/wuji-technology/wuji-hand-description",
+      "files": 31,
+      "bytes": 2736870,
+      "tree_sha256": "9ea50f398ef530f54693c9b85984c0df0f5bdd129daa2c10bd4974d4fb1e0173"
+    },
+    {
+      "path": "assets/sharpa_hand",
+      "license": "Apache-2.0",
+      "notice": "assets/sharpa_hand/LICENSE.txt",
+      "source": "https://github.com/sharpa-robotics/sharpa-urdf-usd-xml",
+      "files": 65,
+      "bytes": 17953590,
+      "tree_sha256": "836c6e82e244380e5926e8e9822e59a73c21385cbb5363c8c68e738a431de8a3"
+    },
+    {
+      "path": "assets/linker_l20",
+      "license": "NOASSERTION",
+      "notice": "THIRD_PARTY_NOTICES.md",
+      "source": "https://github.com/linker-bot/linkerhand-urdf",
+      "files": 144,
+      "bytes": 78908742,
+      "tree_sha256": "88322ee4cdf283387fe533b45c797c49ddc5d3a0dc36b743797c66b2b106e3b4"
+    },
+    {
+      "path": "assets/inspire_hand",
+      "license": "NOASSERTION",
+      "notice": "assets/inspire_hand/LICENSE.txt",
+      "source": "https://www.inspire-robots.com/download/frwz/",
+      "files": 50,
+      "bytes": 8024776,
+      "tree_sha256": "e60175c1cd63a0ca16b20d42f1c525783f69737c8ac26b0b777e7d244006ca94"
+    },
+    {
+      "path": "assets/gaia_hand20",
+      "license": "NOASSERTION",
+      "notice": "assets/gaia_hand20/SOURCE.md",
+      "source": null,
+      "files": 48,
+      "bytes": 17718288,
+      "tree_sha256": "dd75549689c65cef1bf3ccdcb6308d5a070e2daa34694ecc29b035ad6a0487e0"
+    }
+  ]
+}

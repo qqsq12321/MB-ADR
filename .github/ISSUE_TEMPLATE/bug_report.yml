@@ -1,0 +1,27 @@
+name: Bug report
+description: Report a reproducible installation, retargeting or device issue.
+body:
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and reproduction
+      description: Include the exact command, expected behaviour and actual result.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python, PyTorch, NumPy, MuJoCo and commit/version; CPU or CUDA.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      render: text
+  - type: textarea
+    id: hardware
+    attributes:
+      label: Hardware, if applicable
+      description: Headset/APK version, hand revision/firmware, transport and dry-run result. Omit credentials and device serial numbers.

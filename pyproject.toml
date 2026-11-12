@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mbadr"
+dynamic = ["version"]
+description = "Model-based neural retargeting for dexterous robot hands"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md", "third_party/licenses/*"]
+authors = [{name = "MB-ADR contributors"}]
+dependencies = [
+    "numpy>=1.24,<3",
+    "scipy>=1.10,<2",
+    "PyYAML>=6,<7",
+    "nlopt>=2.7,<3",
+    "torch>=2.5.1,<3",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+simulation = ["mujoco>=3.2.6,<4", "Pillow>=10,<13"]
+hardware = ["pyserial>=3.5,<4"]
+verification = ["pin>=3,<5"]
+dev = ["build>=1.2,<2"]
+all = ["mujoco>=3.2.6,<4", "Pillow>=10,<13", "pyserial>=3.5,<4", "pin>=3,<5", "build>=1.2,<2"]
+
+[project.scripts]
+mbadr-train = "mbadr.train:main"
+mbadr-evaluate = "mbadr.evaluate:main"
+mbadr-l20 = "mbadr.teleop_l20:main"
+mbadr-pico-relay = "mbadr.pico_relay:main"
+
+[project.urls]
+Source = "https://github.com/qqsq12321/MB-ADR"
+Issues = "https://github.com/qqsq12321/MB-ADR/issues"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+include = ["mbadr*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "mbadr._version.__version__"}

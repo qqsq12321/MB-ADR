@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from functools import lru_cache
+import os
 from pathlib import Path
 
 import numpy as np
@@ -17,7 +18,9 @@ import yaml
 
 from .robot_configs import ROBOT_CONFIGS
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+_SOURCE_ROOT = Path(__file__).resolve().parent.parent
+_ROOT_CANDIDATE = Path.cwd() if (Path.cwd() / "configs/pico4").is_dir() else _SOURCE_ROOT
+PROJECT_ROOT = Path(os.environ.get("MBADR_PROJECT_ROOT", _ROOT_CANDIDATE)).expanduser().resolve()
 ASSETS_DIR = PROJECT_ROOT / "assets"
 CONFIGS_DIR = PROJECT_ROOT / "configs"
 OUT_DIR = PROJECT_ROOT / "out"
@@ -63,7 +66,9 @@ ROBOT_ALIASES = {
     "unitree_dex5_hand": "unitree_dex5_hand",
 }
 
-SUPPORTED_HANDS = sorted(set(ROBOT_ALIASES.values()))
+# Historical aliases without bundled definitions are not runnable hand types.
+ROBOT_ALIASES = {alias: robot for alias, robot in ROBOT_ALIASES.items() if robot in ROBOT_CONFIGS}
+SUPPORTED_HANDS = sorted(ROBOT_CONFIGS)
 
 
 def resolve_robot_name(name: str) -> str:
@@ -298,12 +303,15 @@ def default_config_path(robot_type: str, input_source: str = "pico4") -> Path:
     robot_type = resolve_robot_name(robot_type)
     path = CONFIGS_DIR / input_source / f"{input_source}_{robot_type}.yaml"
     if not path.exists():
-        raise FileNotFoundError(f"No adaptive config at {path}")
+        raise FileNotFoundError(
+            f"No adaptive config at {path}. Install from a full checkout, or set "
+            "MBADR_PROJECT_ROOT to the checkout containing assets/configs/data/out."
+        )
     return path
 
 
 # Default (pico4 input, L20).
-DEFAULT_CONFIG_PATH = default_config_path("linker_l20", "pico4")
+DEFAULT_CONFIG_PATH = CONFIGS_DIR / "pico4" / "pico4_linker_l20.yaml"
 
 
 __all__ = [

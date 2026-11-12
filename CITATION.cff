@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use MB-ADR, please cite this repository."
+title: "MB-ADR: Model-Based AnyDexRetargeting"
+type: software
+authors:
+  - name: "MB-ADR contributors"
+repository-code: "https://github.com/qqsq12321/MB-ADR"
+url: "https://github.com/qqsq12321/MB-ADR"
+license: MIT
+abstract: "Neural hand retargeting trained through analytic differentiable robot kinematics. Third-party robot asset licenses are documented separately."

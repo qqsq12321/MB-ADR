@@ -1,0 +1,66 @@
+name: CPU checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cpu:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - torch: "2.5.1"
+            constraints: constraints/py310-torch25.txt
+          - torch: "2.6.0"
+            constraints: constraints/py310-torch26.txt
+    env:
+      CUDA_VISIBLE_DEVICES: ""
+      PYTHONNOUSERSITE: "1"
+      OMP_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            constraints/*.txt
+      - name: System libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1 libegl1
+      - name: Install CPU environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "torch==${{ matrix.torch }}" --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e '.[all]' -c '${{ matrix.constraints }}'
+          python -m pip check
+      - name: Unit and loopback/virtual-serial integration checks
+        run: python -m unittest discover -s tests -v
+      - name: Kinematics and loss checks
+        run: |
+          python scripts/verify_fk.py --robot all
+          python scripts/verify_fk_torch.py --device cpu
+          python scripts/verify_loss.py --robot all --frames 40
+      - name: One-step training and checkpoint round trip
+        run: |
+          mbadr-train --robot l20 --data-npy data/qsq_pico4_merged_v1.npy --steps 1 --batch-size 8 --val-every 1 --out /tmp/mbadr-smoke.pt
+          python -c "from mbadr.checkpoint import load_checkpoint; assert load_checkpoint('/tmp/mbadr-smoke.pt')['format_version'] == 2"
+          mbadr-evaluate --robot l20 --checkpoint out/net_l20.pt --data-npy data/qsq_pico4_merged_v1.npy --limit 8 --out /tmp/mbadr-eval.json
+      - name: Package and documentation checks
+        run: |
+          python scripts/check_repository.py
+          python -m build
+          python -m pip install --force-reinstall --no-deps dist/*.whl
+          cd /tmp
+          mbadr-l20 --help
+          mbadr-pico-relay --help

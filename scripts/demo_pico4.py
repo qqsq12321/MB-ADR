@@ -26,16 +26,14 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from mbadr.config import DEFAULT_CONFIG_PATH, HandSpec, default_config_path
-from mbadr.data import preprocess_keypoints
-from mbadr.evaluate import Evaluator
+from mbadr.config import HandSpec
+from mbadr.live import KeypointRetargeter
 from mbadr.mjcf import build_mapping
-from mbadr.model import build_features
 from mbadr.pico4 import Pico4
 from mbadr.scene import build_scene
 
 
-class LiveRetargeter:
+class LiveRetargeter(KeypointRetargeter):
     """Keypoints -> joint vector, in the MJCF joint order."""
 
     def __init__(
@@ -45,16 +43,7 @@ class LiveRetargeter:
         device: torch.device,
         robot: str = "l20",
     ):
-        config_path = (
-            DEFAULT_CONFIG_PATH if robot in ("l20", "linker_l20")
-            else default_config_path(robot, "pico4")
-        )
-        self.ev = Evaluator(config_path, hand, checkpoint, device, robot)
-        self.device = device
-        self.hand = hand
-        self.robot = robot
-        self.chain = self.ev.chain
-        self.loss_fn = self.ev.loss_fn
+        super().__init__(checkpoint, hand, device, robot)
 
         spec = HandSpec.from_name(robot, hand)
         self.mjcf_path = spec.mjcf_path
@@ -68,19 +57,8 @@ class LiveRetargeter:
     @torch.no_grad()
     def __call__(self, raw_keypoints: np.ndarray) -> np.ndarray | None:
         """Raw device keypoints (21, 3) -> MJCF-order joint vector, or None."""
-        if not np.any(raw_keypoints):
-            return None
-        kp = preprocess_keypoints(
-            raw_keypoints, self.hand, self.ev.rotation, normalize_scale=True
-        )
-        if not np.isfinite(kp).all():
-            return None
-
-        t = torch.from_numpy(kp[None]).float().to(self.device)
-        alphas, targets = self.ev.targets_for(t)
-        x = self.ev.net(build_features(targets, alphas))
-        q = self.loss_fn.fk.expand(x)[0].cpu().numpy().astype(np.float64)
-        return self.mapping.to_qpos(q)
+        q = super().__call__(raw_keypoints)
+        return None if q is None else self.mapping.to_qpos(q)
 
 
 def main() -> None:
@@ -96,8 +74,8 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=63901)
     parser.add_argument("--broadcast-port", type=int, default=29888)
     parser.add_argument("--device", default=None)
-    parser.add_argument("--smooth", type=float, default=0.0,
-                        help="EMA alpha for joint output, 0 = off")
+    parser.add_argument("--smooth", type=float, default=0.3,
+                        help="EMA alpha for joint output, 0 = off (default: 0.3)")
     parser.add_argument("--stats-every", type=float, default=2.0,
                         help="seconds between throughput prints, 0 = silent")
     args = parser.parse_args()

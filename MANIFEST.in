@@ -1,0 +1,10 @@
+include README.zh.md CHANGELOG.md CONTRIBUTING.md CITATION.cff THIRD_PARTY_NOTICES.md
+recursive-include constraints *.txt
+recursive-include docs *.md *.txt
+recursive-include scripts *.py
+recursive-include tests *.py
+recursive-include artifacts *.json
+global-exclude *.pyc
+prune assets
+prune data
+prune out
