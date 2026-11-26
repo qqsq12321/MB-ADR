@@ -18,6 +18,10 @@
 
 - Recorded the published beta, hosted CI results and the distinction between the
   release snapshot and later changes on `main`.
+- Environment setup now documents the Conda path first: `conda env create -f
+  environment.yml`, then pip for PyTorch and the editable install. Added a note
+  that a failing `conda env create` usually means the configured channel mirror
+  is unreachable, and that `CONDARC` merges with rather than replaces `~/.condarc`.
 
 ## [0.1.0b1](https://github.com/qqsq12321/MB-ADR/releases/tag/v0.1.0b1) — 2026-11-12
 

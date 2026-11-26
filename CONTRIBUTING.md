@@ -10,13 +10,15 @@ Clone the full repository: assets, recordings and checkpoints are used by the
 integration checks. A Linux CPU environment needs no headset or physical robot:
 
 ```bash
-python3.10 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
+conda env create -f environment.yml
+conda activate mbadr
 python -m pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
 python -m pip install -e '.[all]' -c constraints/py310-torch25.txt
 python -m pip check
 ```
+
+Swap the torch line for the CUDA 12.1 build (`.../whl/cu121`) when the machine has
+a compatible NVIDIA driver. See [README.md](README.md#environment).
 
 The constraints pin tested direct dependencies, not every transitive dependency.
 Use `constraints/py310-torch26.txt` with the 2.6.0 CPU wheel for the second CI job.

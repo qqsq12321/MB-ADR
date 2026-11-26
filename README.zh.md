@@ -44,26 +44,30 @@ python scripts/teleop_l20.py --hand right --device cpu --dry-run
 
 ## 环境搭建
 
-版本 `0.1.0b1` 为 Beta 候选。推荐从完整 Git 检出安装，CPU 复现步骤如下：
+版本 `0.1.0b1` 为 Beta 候选，请从完整 Git 检出安装。
+
+推荐使用 Conda 环境。PyTorch 在环境建好后单独用 pip 安装，以便按机器选择 CPU 或 CUDA 版本：
 
 ```bash
 git clone https://github.com/qqsq12321/MB-ADR.git
 cd MB-ADR
-python3.10 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
+conda env create -f environment.yml
+conda activate mbadr
 python -m pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
 python -m pip install -e '.[all]' -c constraints/py310-torch25.txt
 python -m pip check
 ```
 
-已有 Conda `mbadr` 环境可直接激活，然后执行上面的 editable 安装命令。
-新建 Conda 环境仍可使用 `conda env create -f environment.yml`；PyTorch 单独安装。
-CUDA 12.1 构建可将上面的 CPU 安装命令替换为：
+`environment.yml` 固定 Python 3.10，并安装 numpy、scipy、PyYAML、Pillow、Pinocchio
+以及 `nlopt`/`mujoco`/`pyserial`。NVIDIA 驱动兼容时，可将上面的 CPU 安装替换为 CUDA 12.1 构建：
 
 ```bash
 python -m pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu121
 ```
+
+若 `conda env create` 在收集包元数据阶段失败，通常是配置的镜像源不可访问，而不是
+`environment.yml` 有误。用 `conda config --show-sources` 查看配置，并把 `~/.condarc`
+指向可用的镜像；注意 `CONDARC` 环境变量是与用户配置文件**合并**，而不是替换它。
 
 依赖统一定义在 `pyproject.toml`：基础推理/训练为核心依赖，`simulation`、`hardware`、
 `verification`、`dev` 为可选组，`all` 安装全部。Pinocchio 的 PyPI 包名为 `pin`。

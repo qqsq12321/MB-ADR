@@ -54,27 +54,33 @@ Close the simulation window to exit; use Ctrl+C for hardware control.
 
 ## Environment
 
-Version `0.1.0b1` is a beta candidate. Install from a full Git checkout. CPU reproduction:
+Version `0.1.0b1` is a beta candidate. Install from a full Git checkout.
+
+Conda is the supported environment. PyTorch is installed with pip afterwards so
+the CPU or CUDA build can be chosen to match the machine:
 
 ```bash
 git clone https://github.com/qqsq12321/MB-ADR.git
 cd MB-ADR
-python3.10 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
+conda env create -f environment.yml
+conda activate mbadr
 python -m pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
 python -m pip install -e '.[all]' -c constraints/py310-torch25.txt
 python -m pip check
 ```
 
-An existing Conda `mbadr` environment can be activated and used for the editable
-installation above. New Conda environments can still use
-`conda env create -f environment.yml`; install PyTorch separately. For a compatible
-NVIDIA driver, replace the CPU installation command with the CUDA 12.1 build:
+`environment.yml` pins Python 3.10 and installs numpy, scipy, PyYAML, Pillow,
+Pinocchio and `nlopt`/`mujoco`/`pyserial`. For a compatible NVIDIA driver,
+replace the CPU install with the CUDA 12.1 build:
 
 ```bash
 python -m pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu121
 ```
+
+If `conda env create` fails while collecting package metadata, the configured
+channel mirror is unreachable rather than the recipe being wrong. Check
+`conda config --show-sources` and point `~/.condarc` at a working mirror; the
+`CONDARC` environment variable is merged with the user file, not substituted for it.
 
 `pyproject.toml` is the dependency source: core inference/training plus optional
 `simulation`, `hardware`, `verification` and `dev` groups; `all` installs all of them.
