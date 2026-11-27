@@ -54,7 +54,7 @@ cd MB-ADR
 conda env create -f environment.yml
 conda activate mbadr
 python -m pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
-python -m pip install -e '.[all]' -c constraints/py310-torch25.txt
+python -m pip install -e '.[all]' -c docs/constraints/py310-torch25.txt
 python -m pip check
 ```
 
@@ -71,7 +71,7 @@ python -m pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/
 
 依赖统一定义在 `pyproject.toml`：基础推理/训练为核心依赖，`simulation`、`hardware`、
 `verification`、`dev` 为可选组，`all` 安装全部。Pinocchio 的 PyPI 包名为 `pin`。
-两组 CPU 约束为 `constraints/py310-torch25.txt` 与 `constraints/py310-torch26.txt`，
+两组 CPU 约束为 `docs/constraints/py310-torch25.txt` 与 `docs/constraints/py310-torch26.txt`，
 分别对应 PyTorch 2.5.1 和 2.6.0；它们约束已测的直接依赖，不是完整传递依赖锁文件。
 安装方式见 [PyTorch 官方历史版本](https://docs.pytorch.org/get-started/previous-versions/)。
 
@@ -112,7 +112,7 @@ wheel 只包含代码与声明，不携带手模型、录像和权重；使用�
 | `gaia` | 20 | 16 | 4 | Gaia Hand20 |
 | `inspire` | 12 | 6 | 6 | Inspire Hand，欠驱动程度最高 |
 
-手型定义在 `mbadr/robot_configs.py`，资产放在 `assets/`，配置放在 `configs/pico4/`。新增手型需准备模型、定义任务点、配置尺度与坐标标定，并训练对应权重；FK、loss、训练和评估共用现有实现。
+手型定义在 `mbadr/robot_configs.py`，资产放在 `assets/`，配置放在 `assets/configs/pico4/`。新增手型需准备模型、定义任务点、配置尺度与坐标标定，并训练对应权重；FK、loss、训练和评估共用现有实现。
 
 表中六只手均具备配置、资产与 `out/net_<robot>.pt`；当前自带 checkpoint 均标注为右手。
 真机输出目前只实现 L20 RS485，其他手型支持训练、评估和仿真。
@@ -162,7 +162,7 @@ scripts/
   check_nlopt_budget.py  网络的优势是真实的，还是 NLopt 没收敛到位？
   summarise.py         汇总各手型的评估结果
 assets/                六只手的 URDF / MJCF / mesh
-configs/pico4/         每只手的 retargeting YAML
+assets/configs/pico4/         每只手的 retargeting YAML
 data/                  关键点数据集（.npy）以及 recordings/（.pkl，供 demo 使用）
 out/                   checkpoint 与评估结果 JSON
 tests/                 校准映射、Modbus、Pico 数据有效性与完整 dry-run 测试

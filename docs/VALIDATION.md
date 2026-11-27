@@ -37,7 +37,7 @@ host, not a claim that a fresh OS image or hosted GitHub runner was tested.
 Observed complete dependency versions are recorded for
 [PyTorch 2.5](environments/linux-py310-torch25.txt) and
 [PyTorch 2.6](environments/linux-py310-torch26.txt). The portable constraints in
-`constraints/` pin direct dependencies; the observed environment records also
+`docs/constraints/` pin direct dependencies; the observed environment records also
 list the resolved transitive versions.
 
 ## Release baseline results

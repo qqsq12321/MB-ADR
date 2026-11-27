@@ -169,12 +169,12 @@ retrain on source-specific data when needed.
 If adapted input needs different scales or `mediapipe_rotation`, copy a config:
 
 ```bash
-mkdir -p configs/my_source
-cp configs/pico4/pico4_linker_l20.yaml configs/my_source/my_source_linker_l20.yaml
+mkdir -p assets/configs/my_source
+cp assets/configs/pico4/pico4_linker_l20.yaml assets/configs/my_source/my_source_linker_l20.yaml
 
 # Edit calibration values in the new YAML, then train
 python -m mbadr.train --robot l20 --hand right \
-    --config configs/my_source/my_source_linker_l20.yaml \
+    --config assets/configs/my_source/my_source_linker_l20.yaml \
     --data-npy data/my_source_right.npy --steps 12000 \
     --out out/net_l20_my_source.pt
 ```
@@ -196,7 +196,7 @@ rt = KeypointRetargeter(
     device=torch.device("cpu"),
     robot="l20",
     smooth=0.3,
-    config_path=Path("configs/my_source/my_source_linker_l20.yaml"),
+    config_path=Path("assets/configs/my_source/my_source_linker_l20.yaml"),
 )
 raw = np.load("data/my_source_right.npy", allow_pickle=False)[0]
 q = rt(raw)
@@ -211,7 +211,7 @@ so the network and NLopt reference use matching objectives:
 
 ```bash
 python -m mbadr.evaluate --robot l20 --hand right \
-    --config configs/my_source/my_source_linker_l20.yaml \
+    --config assets/configs/my_source/my_source_linker_l20.yaml \
     --checkpoint out/net_l20_my_source.pt --data-npy data/my_source_right.npy \
     --limit 100 --out out/eval_l20_my_source.json
 ```

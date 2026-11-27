@@ -17,9 +17,9 @@ jobs:
       matrix:
         include:
           - torch: "2.5.1"
-            constraints: constraints/py310-torch25.txt
+            constraints: docs/constraints/py310-torch25.txt
           - torch: "2.6.0"
-            constraints: constraints/py310-torch26.txt
+            constraints: docs/constraints/py310-torch26.txt
     env:
       CUDA_VISIBLE_DEVICES: ""
       PYTHONNOUSERSITE: "1"
@@ -33,7 +33,7 @@ jobs:
           cache: pip
           cache-dependency-path: |
             pyproject.toml
-            constraints/*.txt
+            docs/constraints/*.txt
       - name: System libraries
         run: |
           sudo apt-get update

@@ -18,10 +18,10 @@ import numpy as np
 from .robot_configs import ROBOT_CONFIGS
 
 _SOURCE_ROOT = Path(__file__).resolve().parent.parent
-_ROOT_CANDIDATE = Path.cwd() if (Path.cwd() / "configs/pico4").is_dir() else _SOURCE_ROOT
+_ROOT_CANDIDATE = Path.cwd() if (Path.cwd() / "assets/configs/pico4").is_dir() else _SOURCE_ROOT
 PROJECT_ROOT = Path(os.environ.get("MBADR_PROJECT_ROOT", _ROOT_CANDIDATE)).expanduser().resolve()
 ASSETS_DIR = PROJECT_ROOT / "assets"
-CONFIGS_DIR = PROJECT_ROOT / "configs"
+CONFIGS_DIR = ASSETS_DIR / "configs"
 OUT_DIR = PROJECT_ROOT / "out"
 PROCESSED_DIR = PROJECT_ROOT / "data"
 
@@ -266,7 +266,7 @@ class HandSpec:
 def default_config_path(robot_type: str, input_source: str = "pico4") -> Path:
     """Path to the adaptive YAML for a hand and input source.
 
-    Configs ship with the project under ``configs/<input source>/``.
+    Configs ship with the project under ``assets/configs/<input source>/``.
     """
     robot_type = resolve_robot_name(robot_type)
     path = CONFIGS_DIR / input_source / f"{input_source}_{robot_type}.yaml"

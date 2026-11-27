@@ -85,7 +85,7 @@ require changes to landmark indexing and target construction.
 
 ## 3. Add the retargeting YAML
 
-Create `configs/pico4/pico4_my_hand.yaml`. The default path uses the **canonical
+Create `assets/configs/pico4/pico4_my_hand.yaml`. The default path uses the **canonical
 name**, rather than a short alias. This is a structural template, with values
 that still need calibration for the new model:
 

@@ -23,6 +23,11 @@
 
 ### Changed
 
+- Root layout: `configs/` moved to `assets/configs/` (retargeting YAML belongs
+  with the hand assets it calibrates), `third_party/licenses/` to
+  `docs/licenses/`, and `constraints/` to `docs/constraints/`. The repository
+  root goes from twelve directories to nine; every documented path, the CI
+  workflow, `MANIFEST.in` and the sdist/wheel licence contents follow.
 - `artifacts/manifest.json` moved to `docs/manifest.json`; the root no longer
   carries a single-file directory for it.
 - Removed unused public members (`HandSpec.mp_finger_indices`,

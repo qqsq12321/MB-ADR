@@ -9,7 +9,7 @@ description = "Model-based neural retargeting for dexterous robot hands"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md", "third_party/licenses/*"]
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md", "docs/licenses/*"]
 authors = [{name = "MB-ADR contributors"}]
 dependencies = [
     "numpy>=1.24,<3",

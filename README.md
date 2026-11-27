@@ -65,7 +65,7 @@ cd MB-ADR
 conda env create -f environment.yml
 conda activate mbadr
 python -m pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
-python -m pip install -e '.[all]' -c constraints/py310-torch25.txt
+python -m pip install -e '.[all]' -c docs/constraints/py310-torch25.txt
 python -m pip check
 ```
 
@@ -85,7 +85,7 @@ channel mirror is unreachable rather than the recipe being wrong. Check
 `pyproject.toml` is the dependency source: core inference/training plus optional
 `simulation`, `hardware`, `verification` and `dev` groups; `all` installs all of them.
 The PyPI package supplying Pinocchio is `pin`. The CPU constraints
-`constraints/py310-torch25.txt` / `constraints/py310-torch26.txt` target PyTorch
+`docs/constraints/py310-torch25.txt` / `docs/constraints/py310-torch26.txt` target PyTorch
 2.5.1 / 2.6.0 and constrain tested direct dependencies, not every transitive dependency.
 See the [official PyTorch installation archive](https://docs.pytorch.org/get-started/previous-versions/).
 
@@ -134,7 +134,7 @@ calibration and real-world errors still require hardware mapping and validation.
 | `inspire` | 12 | 6 | 6 | Inspire Hand, most under-actuated |
 
 Hand definitions live in `mbadr/robot_configs.py` with their assets under
-`assets/` and configs under `configs/pico4/`. Adding a hand requires its models,
+`assets/` and configs under `assets/configs/pico4/`. Adding a hand requires its models,
 task-point definitions, scale/frame calibration and a trained checkpoint. FK,
 loss, training and evaluation share the existing implementations.
 
@@ -191,7 +191,7 @@ scripts/
   check_nlopt_budget.py  is the net's advantage real or NLopt under-converged?
   summarise.py         aggregate per-hand evaluation results
 assets/                URDF / MJCF / meshes for the six hands
-configs/pico4/         retargeting YAML per hand
+assets/configs/pico4/         retargeting YAML per hand
 data/                  keypoint dataset (.npy) and recordings/ (.pkl, for demos)
 out/                   checkpoints and evaluation JSON
 tests/                 mapping, Modbus, Pico validity and complete dry-run tests

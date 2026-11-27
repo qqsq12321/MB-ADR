@@ -13,11 +13,11 @@ deferred; those entries remain explicitly unconfirmed.
 
 | Scope | Source / evidence | Recorded terms |
 |---|---|---|
-| Pico receiver/relay and L20 protocol/mapping adaptation | AnyDexRetarget; original Copyright (c) 2025 Shiquan Qiu | [MIT notice](third_party/licenses/AnyDexRetarget-MIT.txt) |
+| Pico receiver/relay and L20 protocol/mapping adaptation | AnyDexRetarget; original Copyright (c) 2025 Shiquan Qiu | [MIT notice](docs/licenses/AnyDexRetarget-MIT.txt) |
 | `assets/shadow_hand/` | [MuJoCo Menagerie Shadow Hand](https://github.com/google-deepmind/mujoco_menagerie/tree/main/shadow_hand), existing local source README | [Apache-2.0](assets/shadow_hand/LICENSE) |
 | `assets/wuji_hand/` | [Wuji hand description](https://github.com/wuji-technology/wuji-hand-description) | [Upstream MIT notice](assets/wuji_hand/LICENSE); exact imported revision not recorded |
-| `assets/sharpa_hand/` | [Sharpa model repository](https://github.com/sharpa-robotics/sharpa-urdf-usd-xml) | [Upstream Apache notice](assets/sharpa_hand/LICENSE.txt), [full Apache-2.0 text](third_party/licenses/Apache-2.0.txt); exact imported revision not recorded |
-| `assets/linker_l20/` | [LinkerHand URDF](https://github.com/linker-bot/linkerhand-urdf) and the GEORT-derived model named in the local configuration | Vendor repository declares Apache-2.0; GeoRT distribution declares [CC BY-NC 4.0](third_party/licenses/GeoRT-CC-BY-NC-4.0.txt). Exact file-by-file derivation remains unconfirmed; retain the noncommercial notice for GEORT-derived material |
+| `assets/sharpa_hand/` | [Sharpa model repository](https://github.com/sharpa-robotics/sharpa-urdf-usd-xml) | [Upstream Apache notice](assets/sharpa_hand/LICENSE.txt), [full Apache-2.0 text](docs/licenses/Apache-2.0.txt); exact imported revision not recorded |
+| `assets/linker_l20/` | [LinkerHand URDF](https://github.com/linker-bot/linkerhand-urdf) and the GEORT-derived model named in the local configuration | Vendor repository declares Apache-2.0; GeoRT distribution declares [CC BY-NC 4.0](docs/licenses/GeoRT-CC-BY-NC-4.0.txt). Exact file-by-file derivation remains unconfirmed; retain the noncommercial notice for GEORT-derived material |
 | `assets/inspire_hand/` | [Existing source attribution](assets/inspire_hand/LICENSE.txt), Inspire model modified by dex_urdf authors | The local file records provenance, not a complete license grant; unconfirmed |
 | `assets/gaia_hand20/` | [Existing source record](assets/gaia_hand20/SOURCE.md), Stellarobot ROS packages | Package metadata reportedly declares BSD; exact terms/copyright notice are not present here; unconfirmed |
 | XRoboToolkit headset application | [XR-Robotics](https://github.com/XR-Robotics), [client](https://github.com/XR-Robotics/XRoboToolkit-Unity-Client) | External download, not bundled or relicensed |

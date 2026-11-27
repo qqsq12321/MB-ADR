@@ -67,7 +67,7 @@ URDF 是训练与 FK 的依据，MJCF 是 MuJoCo 可视化的依据。仅训练�
 
 ## 3. 添加 retargeting YAML
 
-创建 `configs/pico4/pico4_my_hand.yaml`。默认路径使用**规范名称**，不是短别名。以下配置可作为结构模板，数值仍需按手型标定：
+创建 `assets/configs/pico4/pico4_my_hand.yaml`。默认路径使用**规范名称**，不是短别名。以下配置可作为结构模板，数值仍需按手型标定：
 
 ```yaml
 optimizer:
