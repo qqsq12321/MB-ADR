@@ -153,4 +153,4 @@ python scripts/demo_pico4.py --robot my_hand --hand right \
 
 这只完成模型与仿真接入。其他手型的硬件输出需要各自的通信协议、关节到执行器映射、零位/方向/限位及失联处理；[L20 驱动](../mbadr/l20.py) 可作为结构参考，但其寄存器和标定仅适用于 L20。
 
-提交新增手型时，同步更新支持列表、模型来源记录与 `assets/manifest.json`；新增公开数据/权重时更新 `artifacts/manifest.json`。在 [贡献指南](../CONTRIBUTING.md) 中查看全仓库检查命令。
+提交新增手型时，同步更新支持列表、模型来源记录与 `assets/manifest.json`；新增公开数据/权重时更新 `docs/manifest.json`。在 [贡献指南](../CONTRIBUTING.md) 中查看全仓库检查命令。

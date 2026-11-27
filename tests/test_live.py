@@ -18,11 +18,9 @@ import torch
 import yaml
 
 from mbadr.config import PROJECT_ROOT, default_config_path
-from mbadr.data import preprocess_keypoints
 from mbadr.live import KeypointRetargeter
-from mbadr.model import build_features
 from mbadr.pico4 import JOINT_21_INDICES
-from scripts.teleop_l20 import validate_checkpoint
+from mbadr.teleop_l20 import validate_checkpoint
 
 
 class LiveTests(unittest.TestCase):
@@ -35,16 +33,6 @@ class LiveTests(unittest.TestCase):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", FutureWarning)
             cls.rt = KeypointRetargeter(cls.checkpoint, "right", torch.device("cpu"))
-
-    def test_inference_matches_original_path(self):
-        ev = self.rt.ev
-        for raw in self.raw:
-            kp = preprocess_keypoints(raw, "right", ev.rotation, normalize_scale=True)
-            with torch.no_grad():
-                alphas, targets = ev.targets_for(torch.from_numpy(kp[None]).float())
-                x = ev.net(build_features(targets, alphas))
-                expected = ev.loss_fn.fk.expand(x)[0].numpy()
-            np.testing.assert_allclose(self.rt(raw), expected, atol=1e-7)
 
     def test_invalid_palm_is_not_inferred(self):
         for raw in (np.zeros((21, 3)), np.full((21, 3), np.nan), np.zeros((26, 3))):

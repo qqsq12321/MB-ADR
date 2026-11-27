@@ -89,7 +89,7 @@ def check_examples() -> int:
 
 
 def check_manifests() -> tuple[int, int]:
-    artifacts = json.loads((ROOT / "artifacts/manifest.json").read_text())["artifacts"]
+    artifacts = json.loads((ROOT / "docs/manifest.json").read_text())["artifacts"]
     for entry in artifacts:
         path = ROOT / entry["path"]
         if path.stat().st_size != entry["bytes"] or digest(path) != entry["sha256"]:

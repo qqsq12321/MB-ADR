@@ -25,7 +25,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from mbadr.chain import KinematicChain
 from mbadr.config import (
-    DEFAULT_CONFIG_PATH,
     HandSpec,
     default_config_path,
 )

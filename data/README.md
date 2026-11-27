@@ -15,7 +15,7 @@ timing metadata. The shared loader performs wrist-frame conversion, calibration
 and scale normalization. `--data-npy` reserves the last 15% by time by default.
 
 Exact sizes and SHA-256 hashes are in
-[artifacts/manifest.json](../artifacts/manifest.json). New data should retain its
+[docs/manifest.json](../docs/manifest.json). New data should retain its
 source, coordinate convention, units and permission to distribute. Pickle replay
 files are only appropriate for trusted recordings, such as the bundled files
 whose hashes are recorded here.

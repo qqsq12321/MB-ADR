@@ -29,7 +29,6 @@ import yaml
 from .chain import KinematicChain
 from .checkpoint import FORMAT_VERSION
 from .config import (
-    DEFAULT_CONFIG_PATH,
     OUT_DIR,
     HandSpec,
     default_config_path,
@@ -165,7 +164,6 @@ def main() -> None:
     # Training runs in float32: the network and the FK must share a dtype, and
     # the loss module's buffers are built from float64 numpy arrays.
     loss_fn = loss_fn.to(device=device, dtype=torch.float32)
-    fk = loss_fn.fk
     print(f"robot: {args.robot}  config: {config_path.name}")
     print(f"independent joints: {chain.num_independent}  (nq={chain.nq})")
 
@@ -227,7 +225,6 @@ def main() -> None:
 
     augmenter = KeypointAugmenter(seed=args.seed)
     rng = np.random.default_rng(args.seed)
-    nd = norm_delta if args.norm_delta is None else args.norm_delta
 
     best = float("inf")
     t0 = time.time()

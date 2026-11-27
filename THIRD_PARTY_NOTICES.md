@@ -4,7 +4,7 @@ The root [MIT license](LICENSE) covers original MB-ADR code, documentation,
 configuration and maintainer-owned data/checkpoints. On 2026-11-12 the maintainer
 confirmed that the shipped recordings/keypoints are self-collected and the
 weights self-trained and may be distributed. Their byte-level inventory is
-[artifacts/manifest.json](artifacts/manifest.json).
+[docs/manifest.json](docs/manifest.json).
 
 Robot model files are third-party material and retain their upstream notices.
 The following records describe available evidence, not a blanket MIT grant for

@@ -3,7 +3,7 @@ recursive-include constraints *.txt
 recursive-include docs *.md *.txt
 recursive-include scripts *.py
 recursive-include tests *.py
-recursive-include artifacts *.json
+include docs/manifest.json
 global-exclude *.pyc
 prune assets
 prune data

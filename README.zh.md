@@ -342,5 +342,5 @@ L20 实物控制维持实验性，状态与实测记录模板见 [硬件验证](
 
 自有代码、配置、数据和训练权重采用 [MIT](LICENSE)，第三方模型保留各自条款，
 见 [第三方声明](THIRD_PARTY_NOTICES.md)。模型与数据的字节校验清单位于
-[artifacts/manifest.json](artifacts/manifest.json)。发布步骤见 [RELEASING.md](docs/RELEASING.md)，
+[docs/manifest.json](docs/manifest.json)。发布步骤见 [RELEASING.md](docs/RELEASING.md)，
 引用信息见 [CITATION.cff](CITATION.cff)。

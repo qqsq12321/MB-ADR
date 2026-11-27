@@ -31,7 +31,6 @@ import torch
 from torch import nn
 
 from .config import (
-    FINGER_NAMES,
     HandSpec,
     MP_DIP_INDICES,
     MP_MCP_INDICES,
@@ -179,7 +178,6 @@ class AdaptiveLoss(nn.Module):
         independently.
         """
         kp_cm = kp * M_TO_CM
-        nf = self.spec.num_fingers
         mcp_i = [MP_MCP_INDICES[i] for i in self.mp_fingers]
         pip_i = [MP_PIP_INDICES[i] for i in self.mp_fingers]
         dip_i = [MP_DIP_INDICES[i] for i in self.mp_fingers]
@@ -232,7 +230,6 @@ class AdaptiveLoss(nn.Module):
         tip_vectors = full[:, 2 * nf :].clone()
 
         if alphas is not None and self.params.pinch_scaling != 1.0 and nf > 1:
-            batch = kp.shape[0]
             partner = alphas[:, 1:].argmax(dim=1) + 1  # (B,)
             alpha = alphas.gather(1, partner[:, None]).squeeze(1)  # (B,)
             beta = torch.clamp(alpha / (self.params.alpha + 1e-8), 0.0, 1.0)  # (B,)

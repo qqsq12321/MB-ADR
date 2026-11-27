@@ -80,6 +80,11 @@ class CustomConfigTests(unittest.TestCase):
             self.assertEqual(factory.call_args.args[0], self.config_path)
 
     def test_live_explicit_config_never_loads_the_default(self):
+        # A missing path must raise rather than silently falling back; a present
+        # one must be used without the default ever being consulted.
+        with self.assertRaises(FileNotFoundError):
+            KeypointRetargeter(self.checkpoint, "right", self.device,
+                              config_path=self.folder / "missing.yaml")
         with patch("mbadr.live.default_config_path", side_effect=AssertionError("default config used")):
             rt = KeypointRetargeter(self.checkpoint, "right", self.device,
                                    config_path=self.config_path)
@@ -89,11 +94,6 @@ class CustomConfigTests(unittest.TestCase):
         with torch.no_grad():
             expected = rt.ev.fk.expand(rt.ev.net_solve(torch.from_numpy(kp[None]).float()))[0].numpy()
         np.testing.assert_allclose(rt(self.raw), expected, atol=1e-7)
-
-    def test_missing_explicit_config_is_not_replaced_with_default(self):
-        with self.assertRaises(FileNotFoundError):
-            KeypointRetargeter(self.checkpoint, "right", self.device,
-                              config_path=self.folder / "missing.yaml")
 
     def test_simulation_adapters_use_custom_calibration(self):
         from scripts.demo_mujoco import NetRetargeter

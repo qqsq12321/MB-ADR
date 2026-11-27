@@ -26,10 +26,10 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from mbadr.cli import resolve_checkpoint, select_device
 from mbadr.config import HandSpec
 from mbadr.live import KeypointRetargeter
 from mbadr.mjcf import build_mapping
-from mbadr.pico4 import Pico4
 from mbadr.scene import build_scene
 
 
@@ -88,13 +88,11 @@ def main() -> None:
     import mujoco.viewer
     from mbadr.pico4 import Pico4
 
-    device = torch.device(
-        args.device or ("cuda" if torch.cuda.is_available() else "cpu")
-    )
-
-    checkpoint = Path(args.checkpoint or (Path("out") / f"net_{args.robot}.pt"))
-    if not checkpoint.exists():
-        raise SystemExit(f"checkpoint not found: {checkpoint}")
+    device = select_device(args.device)
+    try:
+        checkpoint = resolve_checkpoint(args.checkpoint, args.robot)
+    except FileNotFoundError as exc:
+        raise SystemExit(str(exc)) from exc
 
     rt = LiveRetargeter(checkpoint, args.hand, device, args.robot, config_path=args.config)
     ckpt = rt.ev.ckpt

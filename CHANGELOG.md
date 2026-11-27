@@ -7,12 +7,29 @@
 - Custom evaluation YAML now defines both the network objective and the NLopt
   reference. Evaluation and recorded NLopt replay reuse that configured reference
   instead of loading the default Pico objective again.
+- Recorded replay accepts an explicit `--recording` path; the argument used to be
+  joined onto `data/recordings/` unconditionally, so `data/recordings/<file>.pkl`
+  resolved to a path that does not exist and an absolute path never worked.
+- `mbadr-evaluate` puts frame tensors on the evaluator's device instead of the
+  device it selected for itself, which failed whenever those differed.
 
 ### Added
 
 - Optional `config_path` for `KeypointRetargeter` and `--config` for recorded
   replay, live Pico simulation and L20 teleoperation.
 - Hand/input-source integration guides in English and Chinese.
+- `mbadr/cli.py` holds the device and checkpoint resolution shared by the demos,
+  evaluation and L20 teleoperation, replacing four divergent copies.
+
+### Changed
+
+- `artifacts/manifest.json` moved to `docs/manifest.json`; the root no longer
+  carries a single-file directory for it.
+- Removed unused public members (`HandSpec.mp_finger_indices`,
+  `tip_frame_links`, `has_mjcf`, `RetargetNet.to_normalised`,
+  `FOUR_FINGER_HANDS`) and the unused imports pyflakes reported across the
+  package and scripts.
+- Consolidated redundant tests; the suite is 34 tests.
 
 ### Documentation
 

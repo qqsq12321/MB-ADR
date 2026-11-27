@@ -27,7 +27,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .config import PROCESSED_DIR, PROJECT_ROOT
+from .config import PROCESSED_DIR
 from .mediapipe import apply_mediapipe_transformations
 
 # Raw ``.pkl`` recordings, when present, live under the project's data/ dir.

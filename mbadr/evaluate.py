@@ -28,6 +28,7 @@ import numpy as np
 import torch
 
 from .checkpoint import load_checkpoint
+from .cli import select_device
 from .config import (
     OUT_DIR,
     default_config_path,
@@ -164,13 +165,17 @@ def main() -> None:
     parser.add_argument("--out", default=str(OUT_DIR / "eval.json"))
     args = parser.parse_args()
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = select_device(None)
     config_path = (
         Path(args.config) if args.config else default_config_path(args.robot, "pico4")
     )
     evaluator = Evaluator(
         config_path, args.hand, Path(args.checkpoint), device, args.robot
     )
+    # The evaluator owns the loss buffers, the network and the reference model;
+    # frame tensors must live on the same device as those, so take the device
+    # from the evaluator rather than from this function's own choice above.
+    device = evaluator.device
 
     print(f"device: {device}")
     print(f"checkpoint: {args.checkpoint} (validated at step {evaluator.ckpt.get('step')})")
@@ -240,7 +245,6 @@ def main() -> None:
         gap_ref = evaluator.pinch_gap_cm(x_ref_t, alphas)
 
         # Human's own pinch gap, for scale.
-        nf = evaluator.loss_fn.spec.num_fingers
         thumb = kp_np[:, 4]
         partner_kp = alphas[:, 1:].argmax(dim=1).cpu().numpy() + 1
         mp_tip = [4, 8, 12, 16, 20]

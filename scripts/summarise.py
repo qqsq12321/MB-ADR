@@ -14,7 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from mbadr.config import OUT_DIR, SUPPORTED_HANDS  # noqa: E402
+from mbadr.config import OUT_DIR  # noqa: E402
 
 HANDS = ["l20", "shadow", "wuji", "sharpa", "gaia", "inspire"]
 

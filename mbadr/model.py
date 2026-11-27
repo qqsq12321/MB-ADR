@@ -77,11 +77,6 @@ class RetargetNet(nn.Module):
         raw = torch.tanh(self.net(features))
         return self.centre + raw * self.half_range
 
-    def to_normalised(self, x: torch.Tensor) -> torch.Tensor:
-        """Radians -> [-1, 1], for diagnosing how hard the net is saturating."""
-        return (x - self.centre) / (self.half_range + 1e-9)
-
-
 def build_features(
     targets: dict[str, torch.Tensor],
     alphas: torch.Tensor,

@@ -396,5 +396,5 @@ run-record template in [hardware validation](docs/HARDWARE_VALIDATION.md).
 Original code, configuration, maintainer-owned data and trained weights use the
 [MIT license](LICENSE). Robot assets retain their terms in
 [third-party notices](THIRD_PARTY_NOTICES.md). Exact data/model checksums are in
-[artifacts/manifest.json](artifacts/manifest.json). See
+[docs/manifest.json](docs/manifest.json). See
 [release steps](docs/RELEASING.md) and [citation metadata](CITATION.cff).

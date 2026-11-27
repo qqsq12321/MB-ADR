@@ -191,5 +191,5 @@ calibration and input-loss handling. The [L20 driver](../mbadr/l20.py) shows the
 structure, but its registers and calibration are L20-specific.
 
 Update the supported-hand list, model source records and `assets/manifest.json`.
-For new public data/checkpoints, update `artifacts/manifest.json` too.
+For new public data/checkpoints, update `docs/manifest.json` too.
 Full-repository checks are in [CONTRIBUTING](../CONTRIBUTING.md).

@@ -56,14 +56,18 @@ class MappingTests(unittest.TestCase):
         cls.chain = KinematicChain.from_urdf(HandSpec.from_name("l20").urdf_path)
         cls.mapper = L20Mapper(cls.chain.joint_names)
 
-    def test_calibrated_zero_pose(self):
-        # Golden fixture from the existing GEORT/AnyDex real-hand mapper.
-        expected = [253, 128, 128, 128, 128, 255, 128, 128, 128, 128] + [255] * 20
-        self.assertEqual(self.mapper.to_registers(np.zeros(self.chain.nq)), expected)
-
-    def test_calibrated_upper_pose(self):
-        expected = [0, 128, 128, 128, 128, 0, 255, 255, 255, 255, 15, 32, 32, 32, 32] + [0] * 15
-        self.assertEqual(self.mapper.to_registers(self.chain.joint_limits()[:, 1]), expected)
+    def test_calibrated_endpoints_match_the_geort_mapper(self):
+        # Golden fixtures from the existing GEORT/AnyDex real-hand mapper.
+        limits = self.chain.joint_limits()
+        cases = {
+            "zero": ([253, 128, 128, 128, 128, 255, 128, 128, 128, 128] + [255] * 20,
+                     np.zeros(self.chain.nq)),
+            "upper": ([0, 128, 128, 128, 128, 0, 255, 255, 255, 255, 15, 32, 32, 32, 32]
+                      + [0] * 15, limits[:, 1]),
+        }
+        for label, (expected, qpos) in cases.items():
+            with self.subTest(pose=label):
+                self.assertEqual(self.mapper.to_registers(qpos), expected)
 
     def test_joint_order_and_side_prefix_do_not_change_mapping(self):
         rng = np.random.default_rng(42)

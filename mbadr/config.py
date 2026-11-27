@@ -14,7 +14,6 @@ import os
 from pathlib import Path
 
 import numpy as np
-import yaml
 
 from .robot_configs import ROBOT_CONFIGS
 
@@ -34,9 +33,6 @@ MP_DIP_INDICES = [3, 7, 11, 15, 19]
 MP_TIP_INDICES = [4, 8, 12, 16, 20]
 
 FINGER_NAMES = ["thumb", "index", "middle", "ring", "pinky"]
-
-# Hands with 4 fingers map only thumb..ring; the pinky landmarks are dropped.
-FOUR_FINGER_HANDS = ("allegro_hand", "leap_hand")
 
 # Short CLI names -> robot_configs keys.
 ROBOT_ALIASES = {
@@ -220,28 +216,6 @@ class HandSpec:
             return None
         return np.asarray(raw, dtype=np.float64)
 
-    @property
-    def mp_finger_indices(self) -> list[int]:
-        """Which MediaPipe fingers this hand uses."""
-        return list(range(self.num_fingers))
-
-    @property
-    def tip_frame_links(self) -> tuple[str, ...]:
-        """Explicit fingertip frames, when the URDF declares them as links.
-
-        L20's URDF carries fixed ``*_tip`` joints whose origins equal
-        ``tip_offsets``, which makes them an independent check on the offset
-        path. Other hands have no such frame, so this returns an empty tuple
-        and the cross-check is skipped.
-        """
-        if self.robot_type != "linker_l20":
-            return ()
-        # L20 link names carry no side prefix on either hand.
-        return tuple(
-            f"{name}_tip"
-            for name in ("thumb", "index", "middle", "ring", "pinky")
-        )
-
     # ---- file locations --------------------------------------------------
 
     @property
@@ -288,12 +262,6 @@ class HandSpec:
             f"No MuJoCo model configured for {self.robot_type} ({self.hand_side})"
         )
 
-    def has_mjcf(self) -> bool:
-        try:
-            return self.mjcf_path.exists()
-        except FileNotFoundError:
-            return False
-
 
 def default_config_path(robot_type: str, input_source: str = "pico4") -> Path:
     """Path to the adaptive YAML for a hand and input source.
@@ -322,7 +290,6 @@ __all__ = [
     "PROCESSED_DIR",
     "DEFAULT_CONFIG_PATH",
     "FINGER_NAMES",
-    "FOUR_FINGER_HANDS",
     "HandSpec",
     "ROBOT_ALIASES",
     "ROBOT_CONFIGS",

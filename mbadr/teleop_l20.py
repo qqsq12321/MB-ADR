@@ -14,8 +14,8 @@ import time
 from pathlib import Path
 
 import numpy as np
-import torch
 
+from mbadr.cli import resolve_checkpoint, select_device
 from mbadr.config import OUT_DIR
 from mbadr.l20 import L20Mapper, L20Output
 from mbadr.live import KeypointRetargeter
@@ -91,10 +91,12 @@ def main() -> None:
         slave_id = 0x29 if args.hand == "right" else 0x2A
     if not 1 <= slave_id <= 247 or args.l20_baudrate <= 0:
         parser.error("invalid --l20-slave-id or --l20-baudrate")
-    if not args.checkpoint.is_file():
-        parser.error(f"checkpoint not found: {args.checkpoint}")
-    device = torch.device(args.device or ("cuda" if torch.cuda.is_available() else "cpu"))
-    rt = KeypointRetargeter(args.checkpoint, args.hand, device, "l20",
+    try:
+        checkpoint = resolve_checkpoint(args.checkpoint, "l20")
+    except FileNotFoundError as exc:
+        parser.error(str(exc))
+    device = select_device(args.device)
+    rt = KeypointRetargeter(checkpoint, args.hand, device, "l20",
                            smooth=args.smooth, config_path=args.config)
     validate_checkpoint(rt, args.hand)
     L20Mapper(rt.chain.joint_names)  # Validate every motor mapping before opening serial.

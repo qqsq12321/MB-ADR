@@ -24,6 +24,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from mbadr.cli import resolve_checkpoint, select_device
 from mbadr.config import (
     HandSpec,
     default_config_path,
@@ -85,15 +86,11 @@ def main() -> None:
     import mujoco
     import mujoco.viewer
 
-    device = torch.device(
-        args.device or ("cuda" if torch.cuda.is_available() else "cpu")
-    )
-
-    checkpoint = Path(
-        args.checkpoint or (Path("out") / f"net_{args.robot}.pt")
-    )
-    if not checkpoint.exists():
-        raise SystemExit(f"checkpoint not found: {checkpoint}")
+    device = select_device(args.device)
+    try:
+        checkpoint = resolve_checkpoint(args.checkpoint, args.robot)
+    except FileNotFoundError as exc:
+        raise SystemExit(str(exc)) from exc
 
     # ---- data ------------------------------------------------------------
     net = NetRetargeter(checkpoint, device, args.robot, args.hand, config_path=args.config)
@@ -102,8 +99,11 @@ def main() -> None:
     print(f"checkpoint step {ckpt.get('step')}, val {val:.4f}" if val else
           f"checkpoint step {ckpt.get('step')}")
 
+    recording = Path(args.recording)
+    if not recording.is_file():
+        recording = RECORDING_ROOT / recording
     data = build_dataset(
-        {Path(args.recording).stem: RECORDING_ROOT / args.recording},
+        {recording.stem: recording},
         args.hand,
         rotation_xyz=net.ev.rotation,
         verbose=False,
@@ -140,7 +140,6 @@ def main() -> None:
         scene.apply_camera(viewer.cam)
         i = 0
         paused = False
-        last = time.perf_counter()
         while viewer.is_running():
             step_start = time.perf_counter()
 
